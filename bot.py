@@ -58,11 +58,8 @@ async def generate(client, message):
             context=context,
             messages=message.text
         )
-
-        # Save the updated context back to the database
-        await db.update_user_context(user_id, response)
-
-        await message.reply_text(f"{response}")
+        last_content = response.last['content']
+        await message.reply_text(f"{last_content}")
 
     except Exception as e:
         await message.reply_text(f"Error: {e}")
