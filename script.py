@@ -30,6 +30,12 @@ class script(object):
         'context': 'Pretend to be my boyfriend, love me, care me, and make me happy',
     }
 
+    ELON_MUSK = {
+        'name': 'Elon Musk',
+        'welcome_text': 'Hello, I am Elon Musk. how can I bug you, you beggar?',
+        'context': 'Pretend to be Elon Musk, and bug me',
+    }
+
     CHATBOT = {
         'name': 'Chatbot',
         'welcome_text': 'Hello, I am Chatbot. How can I help you?',
