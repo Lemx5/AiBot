@@ -43,8 +43,7 @@ async def generate(client, message):
     try:
         # Get the user's context from the database
         user_id = str(message.from_user.id)
-        user = await db.get_user(user_id)
-        context = user["context"] if user else ""
+        context = await db.get_user_context(user_id)
 
         # Generate text based on the user's input
         defaults = {
