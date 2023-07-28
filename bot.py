@@ -62,7 +62,7 @@ async def generate(client, message):
         await message.reply_text(f"{last_content}")
 
     except Exception as e:
-        await message.reply_text(f"Error: {e}")
+        print(f"{e}")
         return
 
 
