@@ -1,11 +1,11 @@
 import os
 
 
-API_ID = int(os.environ.get("API_ID", 12345))
+API_ID = int(os.environ.get("API_ID", ""))
 API_HASH = os.environ.get("API_HASH", "")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
-ADMINS = os.environ.get("ADMINS", "")
+ADMINS = os.environ.get("ADMINS", "123")
 
 # PaLM api
 PALM_API = os.environ.get("PALM_API", "")

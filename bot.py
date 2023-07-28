@@ -2,20 +2,30 @@ import re
 from pyrogram import Client, filters
 import google.generativeai as palm
 from better_profanity import profanity
-from config import PALM_API_KEY
+from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
 from script import script
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database import db
 
-palm.configure(api_key=PALM_API_KEY)
+palm.configure(api_key=PALM_API)
 
 # Initialize the Pyrogram Client and Database
-app = Client("my_bot")
+app = Client(
+    "palmbot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
+    workers=4,
+    plugins=dict(root="plugins")
+    )
 
 
 @app.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
-    await message.reply_text('Hi, I am PaLM. I can generate text based on the input you give me')
+    if not await db.is_user_exist(str(message.from_user.id)):
+        await db.add_user(str(message.from_user.id))
+    # Send a welcome message to the user
+    await message.reply_text('Hi, I am Azalea. I can generate text based on the input you give me')
 
 
 @app.on_message(filters.text & filters.private)
@@ -129,3 +139,6 @@ async def callback_handler(client, callback_query):
     await callback_query.message.edit_text(welcome_text)
     await callback_query.message.reply_text(f"Your context: {context}")
 
+
+if __name__ == "__main__":
+    app.run()
