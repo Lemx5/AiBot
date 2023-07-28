@@ -23,9 +23,10 @@ app = Client(
 @app.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     if not await db.is_user_exist(str(message.from_user.id)):
-        await db.add_user(str(message.from_user.id))
+        await db.add_user(str(message.from_user.id))    
     # Send a welcome message to the user
-    await message.reply_text('Hi, I am Azalea. I can generate text based on the input you give me')
+    user_name = message.from_user.first_name
+    await message.reply_text(f"Hi {user_name}, I am Azalea. I can generate text based on the input you give me")
 
 
 @app.on_message(filters.text & filters.private)
