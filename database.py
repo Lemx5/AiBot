@@ -10,7 +10,7 @@ class Database:
     def new_user(self, id):
         return {
             "user_id": id,
-            "mode": "default",
+            "context": "",
         }
 
     async def add_user(self, id):
@@ -20,7 +20,9 @@ class Database:
     async def is_user_exist(self, id):
         user = await self.col.find_one({"user_id": id})
         return True if user else False
-    
+
+    async def update_user_context(self, id, context):
+        await self.col.update_one({"user_id": id}, {"$set": {"context": context}})
 
     
-db = Database(DATABASE_URL, DATABASE_NAME)    
+db = Database(DATABASE_URL, DATABASE_NAME)
