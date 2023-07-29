@@ -76,71 +76,80 @@ async def generate(client, message):
 
 @app.on_message(filters.command('model', prefixes='/'))
 async def model(client, message):
-    # Get the page number from the command, default to 1
-    page = int(message.text.split('/model')[-1].strip()) if len(message.text.split()) > 1 else 1
+    try:
+        # Get the page number from the command, default to 1
+        page = int(message.text.split('/model')[-1].strip()) if len(message.text.split()) > 1 else 1
 
-    # Create an inline keyboard with options from the `script` class for the given page
-    options = []
-    total_roles = len(script.__dict__.values())
-    per_page = 5
-    start_idx = (page - 1) * per_page
-    end_idx = min(start_idx + per_page, total_roles)
+        # Create an inline keyboard with options from the `script` class for the given page
+        options = []
+        total_roles = len(script.__dict__.values())
+        per_page = 5
+        start_idx = (page - 1) * per_page
+        end_idx = min(start_idx + per_page, total_roles)
 
-    for i, role in enumerate(list(script.__dict__.values())[start_idx:end_idx]):
-        if isinstance(role, dict):
-            emoji = "✅ " if role["name"] in db.get_user(str(message.from_user.id))["context"] else ""
-            options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=str(role))])
+        for i, role in enumerate(list(script.__dict__.values())[start_idx:end_idx]):
+            if isinstance(role, dict):
+                emoji = "✅ " if role["name"] in db.get_user(str(message.from_user.id))["context"] else ""
+                options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=str(role))])
 
-    # Add the "Next" button if there are more pages
-    if end_idx < total_roles:
-        next_page = page + 1
-        options.append([InlineKeyboardButton("Next", callback_data=f"next_page:{next_page}")])
+        # Add the "Next" button if there are more pages
+        if end_idx < total_roles:
+            next_page = page + 1
+            options.append([InlineKeyboardButton("Next", callback_data=f"next_page:{next_page}")])
 
-    # Add the "Previous" button if there are previous pages
-    if page > 1:
-        prev_page = page - 1
-        options.append([InlineKeyboardButton("Previous", callback_data=f"prev_page:{prev_page}")])
+        # Add the "Previous" button if there are previous pages
+        if page > 1:
+            prev_page = page - 1
+            options.append([InlineKeyboardButton("Previous", callback_data=f"prev_page:{prev_page}")])
 
-    # Add the "Reset" button at the bottom
-    options.append([InlineKeyboardButton("Reset", callback_data="reset")])
+        # Add the "Reset" button at the bottom
+        options.append([InlineKeyboardButton("Reset", callback_data="reset")])
 
-    reply_markup = InlineKeyboardMarkup(options)
-    await message.reply_text("Choose a model", reply_markup=reply_markup)
+        reply_markup = InlineKeyboardMarkup(options)
+        await message.reply_text("Choose a model", reply_markup=reply_markup)
+
+    except Exception as e:
+        # Handle any unexpected errors and log them
+        print(f"Error in 'model' command handler: {e}")
 
 
 @app.on_callback_query()
 async def callback_handler(client, callback_query):
-    data = eval(callback_query.data)  # Use eval to convert the string back to a dictionary
+    try:
+        data = eval(callback_query.data)  # Use eval to convert the string back to a dictionary
 
-    if "next_page" in data:
-        # If the callback data indicates the "Next" button, go to the next page
-        await model(client, callback_query.message)
-        return
+        if "next_page" in data:
+            # If the callback data indicates the "Next" button, go to the next page
+            await model(client, callback_query.message)
+            return
 
-    if "prev_page" in data:
-        # If the callback data indicates the "Previous" button, go to the previous page
-        await model(client, callback_query.message)
-        return
+        if "prev_page" in data:
+            # If the callback data indicates the "Previous" button, go to the previous page
+            await model(client, callback_query.message)
+            return
 
-    if "reset" in data:
-        # If the callback data indicates the "Reset" button, reset the user's context
-        user_id = str(callback_query.from_user.id)
-        await db.update_user_context(user_id, "")
-        await model(client, callback_query.message)
-        return
+        if "reset" in data:
+            # If the callback data indicates the "Reset" button, reset the user's context
+            user_id = str(callback_query.from_user.id)
+            await db.update_user_context(user_id, "")
+            await model(client, callback_query.message)
+            return
 
-    welcome_text = data['welcome_text']
-    context = data['context']
+        # The user has selected a model
+        selected_model_name = data
+        selected_model = next((model for model in script if model["name"] == selected_model_name), None)
+        if selected_model:
+            # Save the context to the database
+            user_id = str(callback_query.from_user.id)
+            await db.update_user_context(user_id, selected_model["context"])
 
-    # Get the user ID from the callback_query
-    user_id = str(callback_query.from_user.id)
+            # Send the selected model's welcome text and context to the user
+            await callback_query.message.edit_text(selected_model["welcome_text"])
+            await callback_query.message.reply_text(f"Your context: {selected_model['context']}")
 
-    # Save the context to the database
-    await db.update_user_context(user_id, context)
-
-    # Send the selected model's welcome text and context to the user
-    await callback_query.message.edit_text(welcome_text)
-    await callback_query.message.reply_text(f"Your context: {context}")
+    except Exception as e:
+        # Handle any unexpected errors and log them
+        print(f"Error in 'callback_handler': {e}")
 
 
 if __name__ == "__main__":
