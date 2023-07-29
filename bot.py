@@ -74,6 +74,8 @@ async def generate(client, message):
         print(f"Error in 'generate' message handler: {e}")
 
 
+# ... (existing code above)
+
 @app.on_message(filters.command('model', prefixes='/'))
 async def model(client, message):
     try:
@@ -90,7 +92,7 @@ async def model(client, message):
         for i, role in enumerate(list(script.__dict__.values())[start_idx:end_idx]):
             if isinstance(role, dict):
                 emoji = "✅ " if role["name"] in await db.get_user_context(str(message.from_user.id)) else ""
-                options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=role["name"])])
+                options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=str(role))])
 
         # Add the "Next" button if there are more pages
         if end_idx < total_roles:
@@ -113,7 +115,6 @@ async def model(client, message):
         print(f"Error in 'model' command handler: {e}")
 
 
-
 @app.on_callback_query()
 async def callback_handler(client, callback_query):
     try:
@@ -121,12 +122,14 @@ async def callback_handler(client, callback_query):
 
         if data.startswith("next_page"):
             # If the callback data indicates the "Next" button, go to the next page
-            await model(client, callback_query.message)
+            page = int(data.split(":")[-1])
+            await model(client, callback_query.message, page)
             return
 
         if data.startswith("prev_page"):
             # If the callback data indicates the "Previous" button, go to the previous page
-            await model(client, callback_query.message)
+            page = int(data.split(":")[-1])
+            await model(client, callback_query.message, page)
             return
 
         if data == "reset":
@@ -137,7 +140,7 @@ async def callback_handler(client, callback_query):
             return
 
         # The user has selected a model
-        selected_model = next((role for role in script.__dict__.values() if role["name"] == data), None)
+        selected_model = next((role for role in script.__dict__.values() if str(role) == data), None)
         if selected_model:
             # Save the context to the database
             user_id = str(callback_query.from_user.id)
@@ -150,6 +153,9 @@ async def callback_handler(client, callback_query):
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'callback_handler': {e}")
+
+
+# ... (existing code below)
 
 
 if __name__ == "__main__":
