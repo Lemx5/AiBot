@@ -89,8 +89,8 @@ async def model(client, message):
 
         for i, role in enumerate(list(script.__dict__.values())[start_idx:end_idx]):
             if isinstance(role, dict):
-                emoji = "✅ " if role["name"] in db.get_user(str(message.from_user.id))["context"] else ""
-                options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=str(role))])
+                emoji = "✅ " if role["name"] in await db.get_user_context(str(message.from_user.id)) else ""
+                options.append([InlineKeyboardButton(f"{emoji}{role['name']}", callback_data=role["name"])])
 
         # Add the "Next" button if there are more pages
         if end_idx < total_roles:
@@ -113,35 +113,35 @@ async def model(client, message):
         print(f"Error in 'model' command handler: {e}")
 
 
+
 @app.on_callback_query()
 async def callback_handler(client, callback_query):
     try:
-        data = eval(callback_query.data)  # Use eval to convert the string back to a dictionary
+        data = callback_query.data
 
-        if "next_page" in data:
+        if data.startswith("next_page"):
             # If the callback data indicates the "Next" button, go to the next page
             await model(client, callback_query.message)
             return
 
-        if "prev_page" in data:
+        if data.startswith("prev_page"):
             # If the callback data indicates the "Previous" button, go to the previous page
             await model(client, callback_query.message)
             return
 
-        if "reset" in data:
+        if data == "reset":
             # If the callback data indicates the "Reset" button, reset the user's context
             user_id = str(callback_query.from_user.id)
-            await db.update_user_context(user_id, "")
+            await db.update_user_context(user_id, [])
             await model(client, callback_query.message)
             return
 
         # The user has selected a model
-        selected_model_name = data
-        selected_model = next((model for model in script if model["name"] == selected_model_name), None)
+        selected_model = next((role for role in script.__dict__.values() if role["name"] == data), None)
         if selected_model:
             # Save the context to the database
             user_id = str(callback_query.from_user.id)
-            await db.update_user_context(user_id, selected_model["context"])
+            await db.update_user_context(user_id, [selected_model["name"]])
 
             # Send the selected model's welcome text and context to the user
             await callback_query.message.edit_text(selected_model["welcome_text"])
