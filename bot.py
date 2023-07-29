@@ -183,5 +183,5 @@ async def callback_handler(client, callback_query):
         print(f"Error in 'callback_handler': {e}")
 
 
-if __name__ == "__main__":
-    app.run()
+
+app.run()
