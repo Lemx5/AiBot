@@ -65,6 +65,7 @@ async def generate(client, message):
             **defaults,
             context=context,
             messages=message.text
+        )
 
         await message.reply_text(response.last)
 
