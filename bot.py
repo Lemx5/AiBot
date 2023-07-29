@@ -15,32 +15,40 @@ app = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    )
+)
 
 
 @app.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
-    if not await db.is_user_exist(str(message.from_user.id)):
-        await db.add_user(str(message.from_user.id))    
-    # Send a welcome message to the user
-    user_name = message.from_user.first_name
-    await message.reply_text(f"Hi {user_name}, I am Azalea. I can generate text based on the input you give me")
+    try:
+        if not await db.is_user_exist(str(message.from_user.id)):
+            await db.add_user(str(message.from_user.id))
+        
+        # Send a welcome message to the user
+        user_name = message.from_user.first_name
+        await message.reply_text(f"Hi {user_name}, I am Azalea. I can generate text based on the input you give me")
+
+    except Exception as e:
+        # Handle any unexpected errors and log them
+        print(f"Error in 'start' command handler: {e}")
 
 
 @app.on_message(filters.text & filters.private)
 async def generate(client, message):
-    if message.text.startswith('/'):
-        return
-    # Check if the user's message contains any inappropriate words
-    if profanity.contains_profanity(message.text):
-        await message.reply_text("Sorry, I cannot respond to inappropriate messages.")
-        return
-    # check if the user's message contains any external links
-    if re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.text):
-        await message.reply_text("Sorry, I have been restricted to give information on external link.")
-        return
-
     try:
+        if message.text.startswith('/'):
+            return
+        
+        # Check if the user's message contains any inappropriate words
+        if profanity.contains_profanity(message.text):
+            await message.reply_text("Sorry, I cannot respond to inappropriate messages.")
+            return
+
+        # check if the user's message contains any external links
+        if re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.text):
+            await message.reply_text("Sorry, I have been restricted to give information on external links.")
+            return
+
         # Get the user's context from the database
         user_id = str(message.from_user.id)
         context = await db.get_user_context(user_id)
@@ -62,8 +70,8 @@ async def generate(client, message):
         await message.reply_text(f"{last_content}")
 
     except Exception as e:
-        print(f"{e}")
-        return
+        # Handle any unexpected errors and log them
+        print(f"Error in 'generate' message handler: {e}")
 
 
 @app.on_message(filters.command('model', prefixes='/'))
