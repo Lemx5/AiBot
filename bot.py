@@ -65,9 +65,8 @@ async def generate(client, message):
             **defaults,
             context=context,
             messages=message.text
-        )
-        last_content = response.last['content']
-        await message.reply_text(f"{last_content}")
+
+        await message.reply_text(response.last)
 
     except Exception as e:
         # Handle any unexpected errors and log them
