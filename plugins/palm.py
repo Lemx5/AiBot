@@ -59,7 +59,7 @@ async def generate(client, message):
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
         try:
-            resp = await custom_palm("pretend to be a dog and bark all the time", message.text)
+            resp = await custom_palm("pretend to be my girfriend who scolds me all the time", message.text)
             await m.edit(resp)
             print(resp)
             print(context)
