@@ -26,10 +26,11 @@ class Database:
 
     async def get_user_context(self, id):
         user = await self.col.find_one({"user_id": id})
-        if user and "context" in user:
+        if user and "context" in user and user["context"].strip():
             return user["context"]
         else:
             return False
+
 
     
 db = Database(DATABASE_URL, DATABASE_NAME)
