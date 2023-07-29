@@ -23,6 +23,20 @@ async def start(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'start' command handler: {e}")
 
+@Client.on_message(filters.command('model'))
+async def set_model(client, message):
+    context = await client.ask(message.chat.id, "Please Enter the Context", filters=filters.text, timeout=60)
+    if context.text.startswith('/'):
+        return
+    await db.update_user_context(message.from_user.id, context.text)
+    await message.reply_text(f"Context set to {context.text}") 
+
+
+@Client.on_message(filters.command('reset'))
+async def reset_model(client, message):
+    await db.update_user_context(message.from_user.id, None)
+    await message.reply_text("Context reset successfully")
+
 
 @Client.on_message(filters.text & filters.private)
 async def generate(client, message):
@@ -48,10 +62,9 @@ async def generate(client, message):
             await message.reply(resp)
             print(resp)
             print(context)
-        except:
-            await message.reply_text("Sorry, I am not able to respond to this message.")
-            return
-
+        except Exception as e:
+            print(e)
+            
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
@@ -72,16 +85,3 @@ async def custom_palm(context, message):
         )
     return response.last
 
-@Client.on_message(filters.command('model'))
-async def set_model(client, message):
-    context = await client.ask(message.chat.id, "Please Enter the Context", filters=filters.text, timeout=60)
-    if context.text.startswith('/'):
-        return
-    await db.update_user_context(message.from_user.id, context.text)
-    await message.reply_text(f"Context set to {context.text}") 
-
-
-@Client.on_message(filters.command('reset'))
-async def reset_model(client, message):
-    await db.update_user_context(message.from_user.id, None)
-    await message.reply_text("Context reset successfully")
