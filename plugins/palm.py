@@ -47,8 +47,8 @@ async def generate(client, message):
         if context == False:
             resp = await default_palm(message.text)
             await message.reply(resp)
-            print(resp)
-            print(context)
+            print(f"false: {resp}")
+            print(f"flase: {context}")
         else:
             resp = await custom_palm(context, message.text)
             await message.reply(resp)
