@@ -47,10 +47,13 @@ async def generate(client, message):
         if context == False:
             resp = await default_palm(message.text)
             await message.reply(resp)
-
+            print(resp)
+            print(context)
         else:
             resp = await custom_palm(context, message.text)
             await message.reply(resp)
+            print(resp)
+            print(context)
 
     except Exception as e:
         # Handle any unexpected errors and log them
