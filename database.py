@@ -10,7 +10,7 @@ class Database:
     def new_user(self, id):
         return {
             "user_id": id,
-            "context": "",
+            "context": "chatbot",
         }
 
     async def add_user(self, id):
@@ -26,10 +26,8 @@ class Database:
 
     async def get_user_context(self, id):
         user = await self.col.find_one({"user_id": id})
-        if user and "context" in user and user["context"].strip():
-            return user["context"]
-        else:
-            return False
+        return user["context"] if user and "context" in user else None
+
 
 
     

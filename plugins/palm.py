@@ -43,17 +43,14 @@ async def generate(client, message):
         # Get the user's context from the database
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
-
-        if context == False:
-            resp = await default_palm(message.text)
-            await message.reply(resp)
-            print(f"false: {resp}")
-            print(f"flase: {context}")
-        else:
+        try:
             resp = await custom_palm(context, message.text)
             await message.reply(resp)
             print(resp)
             print(context)
+        except:
+            await message.reply_text("Sorry, I am not able to respond to this message.")
+            return
 
     except Exception as e:
         # Handle any unexpected errors and log them
@@ -74,23 +71,6 @@ async def custom_palm(context, message):
         messages=message
         )
     return response.last
-
-# default set 
-async def default_palm(message):
-    defaults = {
-        'model': 'models/text-bison-001',
-        'temperature': 0.7,
-        'candidate_count': 1,
-        'top_k': 40,
-        'top_p': 0.95,
-        'max_output_tokens': 1024,
-        }
-    response = palm.generate_text(
-        **defaults,
-        prompt=message
-        )
-    return response.result
-
 
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
