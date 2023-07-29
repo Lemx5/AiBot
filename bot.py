@@ -22,7 +22,6 @@ app = Client(
     bot_token=BOT_TOKEN,
 )
 
-
 @app.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
@@ -183,5 +182,5 @@ async def callback_handler(client, callback_query):
         print(f"Error in 'callback_handler': {e}")
 
 
-
-app.run()
+if __name__ == "__main__":
+    app.run()
