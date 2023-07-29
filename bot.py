@@ -79,7 +79,7 @@ async def generate(client, message):
         print(f"Error in 'generate' message handler: {e}")
 
 
-@app.on_message(filters.command('model', prefixes='/'))
+@app.on_message(filters.command("model"))
 async def model(client, message):
     try:
         # Use the models read from script.yaml
@@ -87,7 +87,35 @@ async def model(client, message):
         for role in models:
             options.append([InlineKeyboardButton(role['name'], callback_data=str(role))])
 
+        # Create an inline keyboard with options from the `script` class for the given page
+        total_roles = len(options)
+        per_page = 5
+        page = 1
+        start_idx = (page - 1) * per_page
+        end_idx = min(start_idx + per_page, total_roles)
+
+        # Add the models for the given page to the inline keyboard
+        for i in range(start_idx, end_idx):
+            options_chunk = options[i]
+            if isinstance(options_chunk[0], InlineKeyboardButton):
+                await message.reply_text("Choose a model", reply_markup=InlineKeyboardMarkup([options_chunk]))
+            else:
+                await message.reply_text("Choose a model", reply_markup=InlineKeyboardMarkup(options_chunk))
+
         # ... (existing code to paginate the options if needed)
+
+        # Add the "Next" button if there are more pages
+        if end_idx < total_roles:
+            next_page = page + 1
+            options.append([InlineKeyboardButton("Next", callback_data=f"next_page:{next_page}")])
+
+        # Add the "Previous" button if there are previous pages
+        if page > 1:
+            prev_page = page - 1
+            options.append([InlineKeyboardButton("Previous", callback_data=f"prev_page:{prev_page}")])
+
+        # Add the "Reset" button at the bottom
+        options.append([InlineKeyboardButton("Reset", callback_data="reset")])
 
         reply_markup = InlineKeyboardMarkup(options)
         await message.reply_text("Choose a model", reply_markup=reply_markup)
@@ -102,16 +130,53 @@ async def callback_handler(client, callback_query):
     try:
         data = callback_query.data
 
-        # The user has selected a model
-        selected_model = next((role for role in models if str(role) == data), None)
-        if selected_model:
-            # Save the context to the database (you need to implement this)
-            user_id = str(callback_query.from_user.id)
-            await db.update_user_context(user_id, [selected_model["name"]])
+        if data.startswith("next_page"):
+            # If the callback data indicates the "Next" button, go to the next page
+            page = int(data.split(":")[-1])
+            start_idx = (page - 1) * 5
+            end_idx = min(start_idx + 5, len(models))
+            options = []
+            for i in range(start_idx, end_idx):
+                role = models[i]
+                options.append([InlineKeyboardButton(role['name'], callback_data=str(role))])
 
-            # Send the selected model's welcome text and context to the user
-            await callback_query.message.edit_text(selected_model["welcome_text"])
-            await callback_query.message.reply_text(f"Your context: {selected_model['context']}")
+            # ... (existing code to add the "Previous" and "Reset" buttons)
+
+            reply_markup = InlineKeyboardMarkup(options)
+            await callback_query.message.edit_text("Choose a model", reply_markup=reply_markup)
+
+        elif data.startswith("prev_page"):
+            # If the callback data indicates the "Previous" button, go to the previous page
+            page = int(data.split(":")[-1])
+            start_idx = (page - 1) * 5
+            end_idx = min(start_idx + 5, len(models))
+            options = []
+            for i in range(start_idx, end_idx):
+                role = models[i]
+                options.append([InlineKeyboardButton(role['name'], callback_data=str(role))])
+
+            # ... (existing code to add the "Next" and "Reset" buttons)
+
+            reply_markup = InlineKeyboardMarkup(options)
+            await callback_query.message.edit_text("Choose a model", reply_markup=reply_markup)
+
+        elif data == "reset":
+            # If the callback data indicates the "Reset" button, reset the user's context
+            user_id = str(callback_query.from_user.id)
+            await db.update_user_context(user_id, [])
+            await model(client, callback_query.message)
+
+        else:
+            # The user has selected a model
+            selected_model = next((role for role in models if str(role) == data), None)
+            if selected_model:
+                # Save the context to the database (you need to implement this)
+                user_id = str(callback_query.from_user.id)
+                await db.update_user_context(user_id, [selected_model["name"]])
+
+                # Send the selected model's welcome text and context to the user
+                await callback_query.message.edit_text(selected_model["welcome_text"])
+                await callback_query.message.reply_text(f"Your context: {selected_model['context']}")
 
     except Exception as e:
         # Handle any unexpected errors and log them
