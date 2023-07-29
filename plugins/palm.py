@@ -44,7 +44,7 @@ async def generate(client, message):
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
 
-        if context is None:
+        if context == False:
             resp = await default_palm(message.text)
             await message.reply(resp)
 
@@ -91,16 +91,16 @@ async def default_palm(message):
     return response.result
 
 
-@Client.on_message(filters.command('model', prefixes='/'))
+@Client.on_message(filters.command('model'))
 async def set_model(client, message):
     context = await client.ask(message.chat.id, "Please Enter the Context", filters=filters.text, timeout=60)
     if context.text.startswith('/'):
         return
-    await db.set_user_context(message.from_user.id, context.text)
+    await db.update_user_context(message.from_user.id, context.text)
     await message.reply_text(f"Context set to {context.text}") 
 
 
-@Client.on_message(filters.command('reset', prefixes='/'))
+@Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
-    await db.set_user_context(message.from_user.id, None)
+    await db.update_user_context(message.from_user.id, None)
     await message.reply_text("Context reset successfully")
