@@ -34,7 +34,7 @@ async def set_model(client, message):
 
 @Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
-    await db.update_user_context(message.from_user.id, None)
+    await db.update_user_context(message.from_user.id, "Be my girfriend")
     await message.reply_text("Context reset successfully")
 
 
