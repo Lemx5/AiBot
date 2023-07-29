@@ -50,7 +50,7 @@ async def generate(client, message):
             return
 
         # Get the user's context from the database
-        user_id = str(message.from_user.id)
+        user_id = message.from_user.id
         context = await db.get_user_context(user_id)
 
         # Generate text based on the user's input
