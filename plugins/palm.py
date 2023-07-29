@@ -4,6 +4,7 @@ import google.generativeai as palm
 from better_profanity import profanity
 from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
 from database import db
+from bot import app
 
 
 palm.configure(api_key=PALM_API)
