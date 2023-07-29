@@ -40,6 +40,7 @@ async def reset_model(client, message):
 
 @Client.on_message(filters.text & filters.private)
 async def generate(client, message):
+    m = await message.reply_text("Generating...")
     try:
         if message.text.startswith('/'):
             return
@@ -59,7 +60,7 @@ async def generate(client, message):
         context = await db.get_user_context(user_id)
         try:
             resp = await custom_palm("pretend to be a dog and bark all the time", message.text)
-            await message.reply(resp)
+            await m.edit(resp)
             print(resp)
             print(context)
         except Exception as e:
