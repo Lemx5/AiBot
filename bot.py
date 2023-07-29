@@ -5,13 +5,13 @@ from better_profanity import profanity
 from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database import db
-import yaml
+import yml
 
 palm.configure(api_key=PALM_API)
 
 # Read the model information from script.yaml
-with open("script.yaml", "r") as file:
-    models = yaml.safe_load(file)
+with open("script.yml", "r") as file:
+    models = yml.safe_load(file)
 
 # Initialize the Pyrogram Client and Database
 app = Client(
