@@ -24,12 +24,12 @@ class Database:
     async def update_user_context(self, id, context):
         await self.col.update_one({"user_id": id}, {"$set": {"context": context}})
 
-async def get_user_context(self, id):
-    user = await self.col.find_one({"user_id": id})
-    if user and "context" in user:
-        return user["context"]
-    else:
-        return False
+    async def get_user_context(self, id):
+        user = await self.col.find_one({"user_id": id})
+        if user and "context" in user:
+            return user["context"]
+        else:
+            return False
 
     
 db = Database(DATABASE_URL, DATABASE_NAME)
