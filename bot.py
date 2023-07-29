@@ -5,7 +5,8 @@ from better_profanity import profanity
 from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database import db
-import yml
+from yml import yml
+
 
 palm.configure(api_key=PALM_API)
 
