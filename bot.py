@@ -3,7 +3,6 @@ from pyrogram import Client, filters
 import google.generativeai as palm
 from better_profanity import profanity
 from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
-from script import script
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database import db
 import yaml
