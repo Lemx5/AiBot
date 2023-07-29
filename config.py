@@ -10,4 +10,4 @@ PALM_API = os.environ.get("PALM_API", "AIzaSyBzo-WEIY25kL5wHQ5H1YUQp2VVANRxWNI")
 
 # Database
 DATABASE_URL = os.environ.get("DATABASE_URL", "mongodb+srv://ryme:ryme@ryme.jrvxshk.mongodb.net/?retryWrites=true&w=majority")
-DATABASE_NAME = os.environ.get("DB_NAME", "palm")
+DATABASE_NAME = os.environ.get("DB_NAME", "palmbot")
