@@ -2,15 +2,14 @@ import re
 from pyrogram import Client, filters
 import google.generativeai as palm
 from better_profanity import profanity
-from config import PALM_API, API_ID, API_HASH, BOT_TOKEN
+from config import PALM_API
 from database import db
-from bot import app
 
 
 palm.configure(api_key=PALM_API)
 
 
-@app.on_message(filters.command('start', prefixes='/'))
+@Client.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
         if not await db.is_user_exist(str(message.from_user.id)):
@@ -25,7 +24,7 @@ async def start(client, message):
         print(f"Error in 'start' command handler: {e}")
 
 
-@app.on_message(filters.text & filters.private)
+@Client.on_message(filters.text & filters.private)
 async def generate(client, message):
     try:
         if message.text.startswith('/'):
@@ -92,7 +91,7 @@ async def default_palm(message):
     return response.result
 
 
-@app.on_message(filters.command('model', prefixes='/'))
+@Client.on_message(filters.command('model', prefixes='/'))
 async def set_model(client, message):
     context = await client.ask(message.chat.id, "Please Enter the Context", filters=filters.text, timeout=60)
     if context.text.startswith('/'):
@@ -101,7 +100,7 @@ async def set_model(client, message):
     await message.reply_text(f"Context set to {context.text}") 
 
 
-@app.on_message(filters.command('reset', prefixes='/'))
+@Client.on_message(filters.command('reset', prefixes='/'))
 async def reset_model(client, message):
     await db.set_user_context(message.from_user.id, None)
     await message.reply_text("Context reset successfully")
