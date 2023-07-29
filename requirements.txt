@@ -4,4 +4,4 @@ pymongo
 motor
 google-generativeai
 better_profanity
-
+pyromod

@@ -26,7 +26,6 @@ class Database:
 
     async def get_user_context(self, id):
         user = await self.col.find_one({"user_id": id})
-        return user["context"] if user else ""
-
+        return user["context"] if user else None
     
 db = Database(DATABASE_URL, DATABASE_NAME)
