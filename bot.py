@@ -63,7 +63,7 @@ async def generate(client, message):
             'model': 'models/chat-bison-001',
             'temperature': 0.25,
             'candidate_count': 1,
-            'top_k': 40,
+            'top_k': 20,
             'top_p': 0.95,
         }
         response = palm.chat(
