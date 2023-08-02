@@ -1,6 +1,7 @@
 from pyrogram import Client, __version__
 from config import API_ID, API_HASH, BOT_TOKEN
-import pyromod.listen
+from aiohttp import web
+from route import web_server
 
 class Bot(Client):
 
@@ -16,6 +17,10 @@ class Bot(Client):
     async def start(self):
         await super().start()
         print(f"Bot started.")
+        webapp = web.AppRunner(await web_server())
+        await app.setup()
+        bind_address = "0.0.0.0"
+        await web.TCPSite(webapp, bind_address, 5050).start()
 
     async def stop(self, *args):
         await super().stop()

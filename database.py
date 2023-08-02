@@ -29,6 +29,4 @@ class Database:
         return user["context"] if user and "context" in user else None
 
 
-
-    
 db = Database(DATABASE_URL, DATABASE_NAME)
