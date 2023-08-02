@@ -4,4 +4,3 @@ pymongo
 motor
 better_profanity
 aiohttp
-google.generativeai>=0.3.1
