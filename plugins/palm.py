@@ -25,16 +25,15 @@ async def start(client, message):
 
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
-    context = await client.ask(message.chat.id, "Please Enter the Context", filters=filters.text, timeout=60)
-    if context.text.startswith('/'):
-        return
-    await db.update_user_context(message.from_user.id, context.text)
-    await message.reply_text(f"Context set to {context.text}") 
+    m = await message.reply_text("Please reply to this message with the context you want to set\n Eg: 'Be my girlfriend'")
+    context = message.reply_to_message        
+    await db.update_user_context(message.from_user.id, context)
+    await m.edit(f"Context set to {context} /n If you want to reset the context, use /reset") 
 
 
 @Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
-    await db.update_user_context(message.from_user.id, "Be my girfriend")
+    await db.update_user_context(message.from_user.id, None)
     await message.reply_text("Context reset successfully")
 
 
@@ -59,7 +58,7 @@ async def generate(client, message):
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
         try:
-            resp = await custom_palm("pretend to be my girfriend who scolds me all the time", message.text)
+            resp = await get_palm(context, message.text)
             await m.edit(resp)
             print(resp)
             print(context)
@@ -71,7 +70,7 @@ async def generate(client, message):
         print(f"Error in 'generate' message handler: {e}")
 
 
-async def custom_palm(context, message):
+async def get_palm(context, message):
     defaults = {
         'model': 'models/chat-bison-001',
         'temperature': 0.25,
