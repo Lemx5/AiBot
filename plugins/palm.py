@@ -33,7 +33,7 @@ async def help(client, message):
 async def set_context(client, message):
     context = await db.get_user_context(message.from_user.id)
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text(f"Your current context is :- <b>{context}</b>\n\nTo set new context send <b>/context <your_context></b>\n<b>Example</b> - <code>/context Pretend to be my girlfriend</code>\n\nTo reset context send /reset")
+        await message.reply_text(f"Your current context is :- \n<b>{context}</b>\n\nTo set new context send <code>/context [your_context] </code>\n<b>Example :-</b>\n<code>/context Pretend to be my girlfriend</code>\n\nTo reset context send /reset")
         return
     try:
         # Get the user's context from the database
