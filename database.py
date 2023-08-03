@@ -25,11 +25,19 @@ class Database:
         return True if user else False
 
     async def update_user_context(self, user_id, context):
+        if not await self.is_user_exist(user_id):
+            await self.add_user(user_id)
+
+        if not isinstance(context, str):
+            print("Error: context should be a string")
+            return
+
         await self.col.update_one({"user_id": user_id}, {"$set": {"context": context}})
 
     async def get_user_context(self, user_id):
         user = await self.col.find_one({"user_id": user_id})
-        return user["context"] if user else None
-
+        if user is None or not user["context"]:
+            return ""
+        return user["context"]
 
 db = Database(DATABASE_URL, DATABASE_NAME)
