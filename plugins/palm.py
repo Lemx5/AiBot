@@ -35,16 +35,16 @@ async def set_model(client, message):
     context = db.get_user_context(message.from_user.id)
     await message.reply_text(f"Your current context is <b>{context}</b>\nTo change it, use /context <context>\neg - <code>/context Pretend to be my girfriend</code>\n\nTo reset your context, use /reset")
 
-# context command handler
 @Client.on_message(filters.command('context'))
 async def set_context(client, message):
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text(f"Please provide a context\nEg - <code>/context Pretend to be my girfriend</code>")
+        await message.reply_text(f"Please provide a context\nEg - <code>/context Pretend to be my girlfriend</code>")
         return
     try:
         # Get the user's context from the database
         user_id = message.from_user.id
         context = message.text.split(' ', 1)[1]
+        
         await db.update_user_context(user_id, context)
         await message.reply_text(f"Context updated successfully to **{context}**")
     except Exception as e:
