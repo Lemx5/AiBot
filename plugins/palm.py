@@ -27,26 +27,21 @@ async def start(client, message):
 # help command handler 
 @Client.on_message(filters.command('help'))
 async def help(client, message):
-    await message.reply_text(f"<b>Usage:</b>\nJust send me a message and I will generate a response based on your message\n\n<b>Commands:</b>\n/start - Start the bot\n/model - Get your current model\n/context - Set your context\n/reset - Reset your context")
-
-# model command handler
-@Client.on_message(filters.command('model'))
-async def get_model(client, message):
-    context = await db.get_user_context(message.from_user.id)
-    await message.reply_text(f"Your current context is <b>{context}</b>\nTo change it, use /context <context>\neg - <code>/context Pretend to be my girfriend</code>\n\nTo reset your context, use /reset")
+    await message.reply_text(f"<b>Usage:</b>\nJust send me a message and I will generate a response based on your message\n\n<b>Commands:</b>\n/start - Start the bot\n/context - Set your context\n/reset - Reset your context")
 
 @Client.on_message(filters.command('context'))
 async def set_context(client, message):
+    context = await db.get_user_context(message.from_user.id)
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text(f"Please provide a context\nEg - <code>/context Pretend to be my girlfriend</code>")
+        await message.reply_text(f"Your current context is :- <b>{context}</b>\n\n To set new context send <b>/context <context></b>\n<b>Example<\b> - <code>/context Pretend to be my girlfriend</code>\n\nTo reset context send /reset")
         return
     try:
         # Get the user's context from the database
         user_id = message.from_user.id
-        context = message.text.split(' ', 1)[1]
+        user_context = message.text.split(' ', 1)[1]
         
-        await db.update_user_context(user_id, context)
-        await message.reply_text(f"Context updated successfully to **{context}**")
+        await db.update_user_context(user_id, user_context)
+        await message.reply_text(f"Context updated successfully to **{user_context}**")
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'context' command handler: {e}")
