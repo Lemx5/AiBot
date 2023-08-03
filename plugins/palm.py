@@ -10,6 +10,7 @@ import asyncio
 palm.configure(api_key=PALM_API)
 
 
+
 @Client.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
@@ -27,7 +28,7 @@ async def start(client, message):
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
     context = db.get_user_context(message.from_user.id)
-    await message.reply_text(f"Your current context is {context}\nTo change it, use /context <context>\nEg - ```/context Pretend to be my girfriend```\n\nTo reset your context, use /reset")
+    await message.reply_text(f"Your current context is {context}\nTo change it, use /context <context>\nEg - /context Pretend to be my girfriend\n\nTo reset your context, use /reset")
 
 
 @Client.on_message(filters.command('context'))
@@ -48,7 +49,7 @@ async def reset_model(client, message):
     await message.reply_text("Context reset successfully")
 
 
-@Client.on_message(filters.text & filters.private & filters.incoming) 
+@Client.on_message(filters.text & filters.private)
 async def generate(client, message):
     m = await message.reply_text("Generating...")
     try:
@@ -69,12 +70,17 @@ async def generate(client, message):
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
 
-        # Start the text animation
+        # Start the text animation loop
         animation_frames = ["Generating", "Generating.", "Generating..", "Generating..."]
-        for frame in animation_frames:
-            await asyncio.sleep(0.5)  # Adjust the delay as desired
-            await m.edit(frame)
+        is_animation_running = True
+        while is_animation_running:
+            for frame in animation_frames:
+                await asyncio.sleep(0.5)  # Adjust the delay as desired
+                await m.edit(frame)
+                if not is_animation_running:  # Break the loop if animation is stopped
+                    break
 
+        # After animation loop, update the message with the final result
         try:
             resp = await get_palm(context, message.text)
             await m.edit(resp)
@@ -82,10 +88,11 @@ async def generate(client, message):
             print(context)
         except Exception as e:
             print(e)
-            
+
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
+
 
 
 
