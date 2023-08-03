@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 from config import DATABASE_URL
 
-DATABASE_NAME = "chatbot"
+DATABASE_NAME = "palmbot"
 COLLECTION_NAME = "users"
 
 class Database:
@@ -29,7 +29,7 @@ class Database:
 
     async def get_user_context(self, user_id):
         user = await self.col.find_one({"user_id": user_id})
-        return user["context"] if user and "context" in user else None
+        return user["context"] if user else None
 
 
 db = Database(DATABASE_URL, DATABASE_NAME)

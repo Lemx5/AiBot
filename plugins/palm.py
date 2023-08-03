@@ -57,7 +57,7 @@ async def reset_model(client, message):
     await db.update_user_context(message.from_user.id, None)
     await message.reply_text("Context reset successfully")
 
-# Start the message handler
+# Generate a response to the user's message
 @Client.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
 
