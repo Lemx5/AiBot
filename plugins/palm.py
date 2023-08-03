@@ -48,7 +48,7 @@ async def reset_model(client, message):
     await message.reply_text("Context reset successfully")
 
 
-@Client.on_message(filters.text & filters.private)
+@Client.on_message(filters.text & filters.private & filters.incoming) 
 async def generate(client, message):
     m = await message.reply_text("Generating...")
     try:
