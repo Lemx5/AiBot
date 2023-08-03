@@ -1,5 +1,7 @@
 import motor.motor_asyncio
-from config import DATABASE_URL, DATABASE_NAME
+from config import DATABASE_URL
+
+DATABASE_NAME = "chatbot"
 
 class Database:
     def __init__(self, uri, database_name):

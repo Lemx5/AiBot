@@ -10,4 +10,3 @@ PALM_API = os.environ.get("PALM_API")
 
 # Database
 DATABASE_URL = os.environ.get("DATABASE_URL")
-DATABASE_NAME = os.environ.get(str("DB_NAME"))
