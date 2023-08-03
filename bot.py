@@ -1,4 +1,4 @@
-from pyrogram import Client, __version__
+from pyrogram import Client
 from config import API_ID, API_HASH, BOT_TOKEN
 from aiohttp import web
 from route import web_server
@@ -13,6 +13,7 @@ class Bot(Client):
             bot_token=BOT_TOKEN,
             workers=10,
             plugins={"root": "plugins"},
+            sleep_threshold=5 # Prevent flood wait
         )
 
     async def start(self):

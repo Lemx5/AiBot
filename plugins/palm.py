@@ -1,16 +1,15 @@
 import re
+import asyncio
 from pyrogram import Client, filters
 import google.generativeai as palm
 from better_profanity import profanity
 from config import PALM_API
 from database import db
-import asyncio
 
-
+# configure palm api key
 palm.configure(api_key=PALM_API)
 
-
-
+# Start the command handler
 @Client.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
@@ -25,12 +24,13 @@ async def start(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'start' command handler: {e}")
 
+# model command handler
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
     context = db.get_user_context(message.from_user.id)
     await message.reply_text(f"Your current context is {context}\nTo change it, use /context <context>\nEg - /context Pretend to be my girfriend\n\nTo reset your context, use /reset")
 
-
+# context command handler
 @Client.on_message(filters.command('context'))
 async def set_context(client, message):
     try:
@@ -43,13 +43,14 @@ async def set_context(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'context' command handler: {e}")
 
+# reset command handler
 @Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
     await db.update_user_context(message.from_user.id, None)
     await message.reply_text("Context reset successfully")
 
-
-@Client.on_message(filters.text & filters.private)
+# Start the message handler
+@Client.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
     m = await message.reply_text("Generating...")
     try:
@@ -70,33 +71,26 @@ async def generate(client, message):
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
 
-        # Start the text animation loop
-        animation_frames = ["Generating", "Generating.", "Generating..", "Generating..."]
-        is_animation_running = True
-        while is_animation_running:
-            for frame in animation_frames:
-                await asyncio.sleep(0.5)  # Adjust the delay as desired
-                await m.edit(frame)
-                if not is_animation_running:  # Break the loop if animation is stopped
-                    break
+        # Start the text animation
+        animation_frames = ["Genera....", "Generat...", "Generati..", "Generatin.", "Generating"]
+        for frame in animation_frames:
+            await asyncio.sleep(0.9)  # Adjust the delay as desired
+            await m.edit(frame)
 
-        # After animation loop, update the message with the final result
         try:
             resp = await get_palm(context, message.text)
             await m.edit(resp)
             print(resp)
             print(context)
-            is_animation_running = False  # Set the flag to stop the animation loop
         except Exception as e:
             print(e)
-
+            
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
 
 
-
-
+# Get the response from palm api
 async def get_palm(context, message):
     defaults = {
         'model': 'models/chat-bison-001',
