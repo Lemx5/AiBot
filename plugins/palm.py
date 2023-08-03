@@ -62,7 +62,7 @@ async def reset_model(client, message):
 async def generate(client, message):
 
     # Check if the user is already in the database if not add the user
-    if not await db.is_user_exist(message.from_user.id)
+    if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id)
                                   
     m = await message.reply_text("Gener.....")
