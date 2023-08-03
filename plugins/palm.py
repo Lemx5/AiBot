@@ -54,7 +54,7 @@ async def set_context(client, message):
 # reset command handler
 @Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
-    await db.update_user_context(message.from_user.id, None)
+    await db.update_user_context(message.from_user.id, "")
     await message.reply_text("Context reset successfully")
 
 # Generate a response to the user's message
