@@ -86,6 +86,7 @@ async def generate(client, message):
             await m.edit(resp)
             print(resp)
             print(context)
+            is_animation_running = False  # Set the flag to stop the animation loop
         except Exception as e:
             print(e)
 
