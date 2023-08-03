@@ -31,8 +31,8 @@ async def help(client, message):
 
 # model command handler
 @Client.on_message(filters.command('model'))
-async def set_model(client, message):
-    context = db.get_user_context(message.from_user.id)
+async def get_model(client, message):
+    context = await db.get_user_context(message.from_user.id)
     await message.reply_text(f"Your current context is <b>{context}</b>\nTo change it, use /context <context>\neg - <code>/context Pretend to be my girfriend</code>\n\nTo reset your context, use /reset")
 
 @Client.on_message(filters.command('context'))
