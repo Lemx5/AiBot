@@ -26,9 +26,10 @@ async def start(client, message):
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
     m = await message.reply_text("Please reply to this message with the context you want to set\n Eg: 'Be my girlfriend'")
-    context = message.reply_to_message        
-    await db.update_user_context(message.from_user.id, context)
-    await m.edit(f"Context set to {context} /n If you want to reset the context, use /reset") 
+    context = message.reply_to_message
+    if context:
+        await db.update_user_context(message.from_user.id, context)
+        await m.edit(f"Context set to {context} /n If you want to reset the context, use /reset") 
 
 
 @Client.on_message(filters.command('reset'))
