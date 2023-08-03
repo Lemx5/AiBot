@@ -4,6 +4,7 @@ import google.generativeai as palm
 from better_profanity import profanity
 from config import PALM_API
 from database import db
+import asyncio
 
 
 palm.configure(api_key=PALM_API)
@@ -67,6 +68,13 @@ async def generate(client, message):
         # Get the user's context from the database
         user_id = message.from_user.id
         context = await db.get_user_context(user_id)
+
+        # Start the text animation
+        animation_frames = ["Generating", "Generating.", "Generating..", "Generating..."]
+        for frame in animation_frames:
+            await asyncio.sleep(0.5)  # Adjust the delay as desired
+            await m.edit(frame)
+
         try:
             resp = await get_palm(context, message.text)
             await m.edit(resp)
@@ -78,6 +86,7 @@ async def generate(client, message):
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
+
 
 
 async def get_palm(context, message):
