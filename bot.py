@@ -18,7 +18,7 @@ class Bot(Client):
         await super().start()
         print(f"Bot started.")
         webapp = web.AppRunner(await web_server())
-        await app.setup()
+        await webapp.setup()
         bind_address = "0.0.0.0"
         await web.TCPSite(webapp, bind_address, 5050).start()
 
