@@ -13,8 +13,8 @@ palm.configure(api_key=PALM_API)
 @Client.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
-        if not await db.is_user_exist(str(message.from_user.id)):
-            await db.add_user(str(message.from_user.id))
+        if not await db.is_user_exist(message.from_user.id):
+            await db.add_user(message.from_user.id)
         
         # Send a welcome message to the user
         user_name = message.from_user.first_name
@@ -24,24 +24,29 @@ async def start(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'start' command handler: {e}")
 
+# help command handler 
+@Client.on_message(filters.command('help'))
+async def help(client, message):
+    await message.reply_text(f"<b>Usage:</b>\nJust send me a message and I will generate a response based on your message\n\n<b>Commands:</b>\n/start - Start the bot\n/model - Get your current model\n/context - Set your context\n/reset - Reset your context")
+
 # model command handler
 @Client.on_message(filters.command('model'))
 async def set_model(client, message):
     context = db.get_user_context(message.from_user.id)
-    await message.reply_text(f"Your current context is **{context}**\nTo change it, use /context <context>\nEg - /context Pretend to be my girfriend\n\nTo reset your context, use /reset")
+    await message.reply_text(f"Your current context is <b>{context}</b>\nTo change it, use /context <context>\neg - <code>/context Pretend to be my girfriend</code>\n\nTo reset your context, use /reset")
 
 # context command handler
 @Client.on_message(filters.command('context'))
 async def set_context(client, message):
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text("Please provide a context\nEg - ```/context Pretend to be my girfriend```")
+        await message.reply_text(f"Please provide a context\nEg - <code>/context Pretend to be my girfriend</code>")
         return
     try:
         # Get the user's context from the database
         user_id = message.from_user.id
         context = message.text.split(' ', 1)[1]
         await db.update_user_context(user_id, context)
-        await message.reply_text(f"Context updated successfully to {context}")
+        await message.reply_text(f"Context updated successfully to **{context}**")
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'context' command handler: {e}")
@@ -55,6 +60,11 @@ async def reset_model(client, message):
 # Start the message handler
 @Client.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
+
+    # Check if the user is already in the database if not add the user
+    if not await db.is_user_exist(message.from_user.id)
+        await db.add_user(message.from_user.id)
+                                  
     m = await message.reply_text("Gener.....")
     try:
         if message.text.startswith('/'):
@@ -75,7 +85,7 @@ async def generate(client, message):
         context = await db.get_user_context(user_id)
 
         # Start the text animation
-        animation_frames = ["Genera....", "Generat...", "Generati..", "Generatin.", "Generating..."]
+        animation_frames = ["Genera....", "Generat...", "Generati..", "Generatin.", "Generating..", "Generating...", "Generating...."]
         for frame in animation_frames:
             await asyncio.sleep(0.9)  # Adjust the delay as desired
             await m.edit(frame)
@@ -91,7 +101,6 @@ async def generate(client, message):
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
-
 
 # Get the response from palm api
 async def get_palm(context, message):
