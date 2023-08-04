@@ -94,7 +94,7 @@ async def help(client, message):
 async def set_context(client, message):
     context = await db.get_user_context(message.from_user.id)
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text(f"Your current context is -\n<b>{context}</b>\n\nTo change context send <code>/context [your_context]</code>\n\n<b>Example:</b>\n<code>/context Pretend to be my girfriend</code>\n\n To rest send /reset")
+        await message.reply_text(f"Your current context is -\n<b>{context}</b>\n\nTo change context send:\n<code>/context [your_context]</code>\n\n<b>Example:</b>\n<code>/context Pretend to be my girfriend</code>\n\n To rest send /reset")
         return
     try:
         # Get the user's context from the database
@@ -109,7 +109,7 @@ async def set_context(client, message):
 # reset command handler
 @Client.on_message(filters.command('reset'))
 async def reset_model(client, message):
-    await db.update_user_context(message.from_user.id, None)
+    await db.update_user_context(message.from_user.id, "")
     await message.reply_text("Context reset successfully")
 
 
