@@ -58,6 +58,8 @@ questions_responses = {
     r"(?i)^where are you from\??$": "I am a bot, so I don't have a physical location. But I'm here to help you!",
     r"(?i)^what can you do\??$": "I can provide information, answer questions, and have casual conversations with you. How can I assist you today?",
     r"(?i)^tell me a joke\??$": "Sure, here's one: Why don't scientists trust atoms? Because they make up everything!",
+    r"(?i)^who made you\??$": "I was made by @iryme",
+    r"(?i)^who is your creator\??$": "I was made by @iryme",
     # Add more questions and responses as needed.
 }
 # Create a filter to match any of the greeting or question patterns.
