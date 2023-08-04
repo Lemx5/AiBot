@@ -12,8 +12,6 @@ from database import db
 # configure palm api key
 palm.configure(api_key=PALM_API)
 
-
-
 # Get the response from palm api
 async def get_palm(context, message):
     defaults = {
@@ -29,7 +27,6 @@ async def get_palm(context, message):
         messages=message
         )
     return response.last
-
 
 # Define a dictionary of common greetings and questions along with their responses.
 greetings_responses = {
@@ -63,7 +60,6 @@ questions_responses = {
     r"(?i)^tell me a joke\??$": "Sure, here's one: Why don't scientists trust atoms? Because they make up everything!",
     # Add more questions and responses as needed.
 }
-
 # Create a filter to match any of the greeting or question patterns.
 greeting_filter = filters.regex(r"|".join(greetings_responses.keys()) + r"|".join(questions_responses.keys()))
 
@@ -77,7 +73,7 @@ async def start(client, message):
         
         # Send a welcome message to the user
         user_name = message.from_user.first_name
-        await message.reply_text(f"Hi {user_name},\nI am **Azalea**, I can generate text based on the input you give me")
+        await message.reply_text(f"Hi {user_name},\nI am <b>Azalea</b>, I can generate text based on the input you give me")
 
     except Exception as e:
         # Handle any unexpected errors and log them
@@ -86,26 +82,22 @@ async def start(client, message):
 # help command handler 
 @Client.on_message(filters.command('help'))
 async def help(client, message):
-    await message.reply_text(f"<b>Usage:</b>\nJust send me a message and I will generate a response based on your message\n\n<b>Commands:</b>\n/start - Start the bot\n/model - Get your current model\n/context - Set your context\n/reset - Reset your context")
+    await message.reply_text(f"<b>Usage:</b>\nJust send me a message and I will generate a response based on your message\n\n<b>Commands:</b>\n/context - Set your context\n/reset - Reset your context")
 
-# model command handler
-@Client.on_message(filters.command('model'))
-async def set_model(client, message):
-    context = db.get_user_context(message.from_user.id)
-    await message.reply_text(f"Your current context is <b>{context}</b>\nTo change it, use /context <context>\neg - <code>/context Pretend to be my girfriend</code>\n\nTo reset your context, use /reset")
 
 # context command handler
 @Client.on_message(filters.command('context'))
 async def set_context(client, message):
+    context = await db.get_user_context(message.from_user.id)
     if len(message.text.split(' ', 1)) == 1:
-        await message.reply_text(f"Please provide a context\nEg - <code>/context Pretend to be my girfriend</code>")
+        await message.reply_text(f"Your current context is -\n<b>{context}</b>\n\nTo change context send <code>/context [your_context]</code>\n\n<b>Example:</b>\n<code>/context Pretend to be my girfriend</code>\n\n To rest send /reset")
         return
     try:
         # Get the user's context from the database
         user_id = message.from_user.id
-        context = message.text.split(' ', 1)[1]
-        await db.update_user_context(user_id, context)
-        await message.reply_text(f"Context updated successfully to **{context}**")
+        user_context = message.text.split(' ', 1)[1]
+        await db.update_user_context(user_id, user_context)
+        await message.reply_text(f"Context updated successfully to **{user_context}**")
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'context' command handler: {e}")
