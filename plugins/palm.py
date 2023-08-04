@@ -36,10 +36,12 @@ greetings_responses = {
     r"(?i)^good morning$": "Good morning! How are you doing?",
     r"(?i)^good afternoon$": "Good afternoon! How can I assist you?",
     r"(?i)^good evening$": "Good evening! How may I help you?",
+    r"(?i)^good night$": "Good night! How can I assist you?",
 }
 
 questions_responses = {
     r"(?i)^how are you(\s*doing)?$": "I'm just a bot, but thanks for asking!",
+    r"(?i)^your name\??$": "My name is Azalea, I'm a bot designed to have conversations with you.",
     r"(?i)^what's up$": "Not much, just chatting with you!",
     r"(?i)^how's your (day|weekend|family) going\??$": "It's going well so far, thanks for asking. How about yours?",
     r"(?i)^did you (sleep|eat|watch|hear) .+\??$": "As a bot, I don't sleep, eat, watch, or hear. But I'm here to help you!",
