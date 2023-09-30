@@ -178,14 +178,8 @@ async def greet_or_question_handler(_, message: Message):
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
 
-# ------------------ Main Execution ------------------
-
-async def main():
-    await asyncio.gather(
-        web.run_app(app),
-        bot.start()
-    )
-
+# Start the bot and web app
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    loop.create_task(web.run_app(app))
+    bot.run()
