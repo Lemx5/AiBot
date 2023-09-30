@@ -32,11 +32,11 @@ bot = Client(
     api_hash=API_HASH
 )
 
-async def home(request):
-    return web.Response(text="Hello, World!")
+async def handle(request):
+    return web.Response(text="Hello, world")
 
 app = web.Application()
-app.add_routes([web.get('/', home)])
+app.router.add_get('/', handle)
 
 # ------------------ Palm Generator ------------------
 def palmgen(text):
