@@ -177,7 +177,7 @@ async def greet_or_question_handler(_, message: Message):
 
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
-    
+
 
 # Start both the bot and the web server concurrently
 async def main():
@@ -199,5 +199,5 @@ async def start_web_server():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    loop.create_task(main())  # Use create_task to run the main coroutine
     loop.run_forever()
