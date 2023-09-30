@@ -114,7 +114,7 @@ async def start(client, message):
     try:
         # Send a welcome message to the user
         user_name = message.from_user.first_name
-        await message.reply_text(f"Hi {user_name},\nI am <b>Azalea</b>, I can generate answers of your questions")
+        await message.reply_text(f"Hi {user_name},\nI am <b>Azalea</b>,\nI can generate answers of your questions")
 
     except Exception as e:
         # Handle any unexpected errors and log them
@@ -143,7 +143,7 @@ async def generate(client, message):
         
         # Generate a response to the user's message
         response = openaigen(message.text)
-        
+
         if not response:
             response = palmgen(message.text)
 
