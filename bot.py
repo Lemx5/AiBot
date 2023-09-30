@@ -189,7 +189,7 @@ async def hello():
 
 async def main():
     await asyncio.gather(
-        web.run_app(app)
+        web.run_app(app),
         bot.start()
     )
 
