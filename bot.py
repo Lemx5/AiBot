@@ -5,10 +5,10 @@ import google.generativeai as palm
 from pyrogram import Client, filters
 from pyrogram.types import Message
 import random
-from quart import Quart
 from profanity import profanity
 import openai
 from openai.api_resources import ChatCompletion
+from aiohttp import web
 # ------------------ Configuration ------------------
 
 # Environmental Variables
@@ -32,8 +32,11 @@ bot = Client(
     api_hash=API_HASH
 )
 
-# Quart App Initialization
-app = Quart(__name__)
+async def home(request):
+    return web.Response(text="Hello, World!")
+
+app = web.Application()
+app.add_routes([web.get('/', home)])
 
 # ------------------ Palm Generator ------------------
 def palmgen(text):
@@ -186,7 +189,7 @@ async def hello():
 
 async def main():
     await asyncio.gather(
-        app.run,
+        web.run_app(app)
         bot.start()
     )
 

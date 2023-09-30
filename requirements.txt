@@ -3,4 +3,5 @@ tgcrypto
 profanity
 google-generativeai
 openai
-quart
+aiohttp
+aiodns
