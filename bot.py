@@ -182,4 +182,8 @@ async def greet_or_question_handler(_, message: Message):
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(web.run_app(app))
-    bot.start()
+    try:
+        loop.create_task(bot.start())
+        loop.run_forever()
+    except Exception as e:
+        print(f"Error starting the bot: {e}")
