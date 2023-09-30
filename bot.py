@@ -177,13 +177,27 @@ async def greet_or_question_handler(_, message: Message):
 
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
+    
 
-# Start the bot and web app
+# Start both the bot and the web server concurrently
+async def main():
+    await asyncio.gather(
+        start_bot(),
+        start_web_server()
+    )
+
+# Define a coroutine to start the Pyrogram bot
+async def start_bot():
+    await bot.start()
+
+# Define a coroutine to start the aiohttp web server
+async def start_web_server():
+    app_runner = web.AppRunner(app)
+    await app_runner.setup()
+    site = web.TCPSite(app_runner, '0.0.0.0', 8080)  # You can adjust the host and port as needed
+    await site.start()
+
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.create_task(web.run_app(app))
-    try:
-        loop.create_task(bot.start())
-        loop.run_forever()
-    except Exception as e:
-        print(f"Error starting the bot: {e}")
+    loop.run_until_complete(main())
+    loop.run_forever()
