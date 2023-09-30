@@ -5,7 +5,7 @@ import google.generativeai as palm
 from pyrogram import Client, filters
 from pyrogram.types import Message
 import random
-from quart import Quart
+from flask import Flask
 from profanity import profanity
 import openai
 from openai.api_resources import ChatCompletion
@@ -33,7 +33,7 @@ bot = Client(
 )
 
 # Quart App Initialization
-app = Quart(__name__)
+app = Flask(__name__)
 
 # ------------------ Palm Generator ------------------
 def palmgen(text):
