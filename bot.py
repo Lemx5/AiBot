@@ -179,14 +179,14 @@ async def greet_or_question_handler(_, message: Message):
 # ------------------ Quart Routes ------------------
 
 @app.route("/")
-async def health_check():
-    return "Alive!", 200
+async def hello():
+    return "Alive!"
 
 # ------------------ Main Execution ------------------
 
 async def main():
     await asyncio.gather(
-        app.run_task(host="0.0.0.0", port=8080),
+        app.run,
         bot.start()
     )
 
