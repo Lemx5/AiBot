@@ -15,8 +15,8 @@ from openai.api_resources import ChatCompletion
 API_ID = os.environ.get("API_ID")
 API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-PALM_API_KEY = os.environ.get("PALM_API_KEY")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+PALM_API_KEY = os.environ.get("PALM_API")
+OPENAI_API_KEY = os.environ.get("OPENAI_API")
 
 
 # Palm Client Configuration
