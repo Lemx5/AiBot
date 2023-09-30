@@ -178,13 +178,6 @@ async def greet_or_question_handler(_, message: Message):
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
 
-
-# ------------------ Quart Routes ------------------
-
-@app.route("/")
-async def hello():
-    return "Alive!"
-
 # ------------------ Main Execution ------------------
 
 async def main():
