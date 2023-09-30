@@ -4,3 +4,4 @@ profanity
 aiohttp
 google-generativeai
 openai
+quart
