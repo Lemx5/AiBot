@@ -8,7 +8,6 @@ import random
 from profanity import profanity
 import openai
 from openai.api_resources import ChatCompletion
-from aiohttp import web
 # ------------------ Configuration ------------------
 
 # Environmental Variables
@@ -31,12 +30,6 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH
 )
-
-async def handle(request):
-    return web.Response(text="Hello, world")
-
-app = web.Application()
-app.router.add_get('/', handle)
 
 # ------------------ Palm Generator ------------------
 def palmgen(text):
