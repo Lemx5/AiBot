@@ -143,6 +143,7 @@ async def generate(client, message):
         
         # Generate a response to the user's message
         response = openaigen(message.text)
+        
         if not response:
             response = palmgen(message.text)
 
