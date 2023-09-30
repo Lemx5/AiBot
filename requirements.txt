@@ -1,6 +1,6 @@
 pyrogram
 tgcrypto
-pymongo
-motor
-better_profanity
+profanity
 aiohttp
+google-generativeai
+openai
