@@ -4,4 +4,3 @@ profanity
 google-generativeai
 openai
 aiohttp
-aiodns
