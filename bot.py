@@ -102,14 +102,15 @@ questions_responses = {
 }
 
 # Create a list of all regular expression patterns and join them with the | operator.
+# Create a list of all regular expression patterns and join them with the | operator.
 all_patterns = list(greetings_responses.keys()) + list(questions_responses.keys())
-combined_pattern = "|".join(f"({pattern})" for pattern in all_patterns)
+combined_pattern = "|".join(all_patterns)
 
 # Create a compiled regular expression pattern.
 greeting_filter = re.compile(combined_pattern)
 
 # Handler function to respond to greetings and questions.
-@bot.on_message(filters.regex(greeting_filter))
+@Client.on_message(filters.regex(greeting_filter))
 async def greet_or_question_handler(_, message: Message):
     text = message.text.lower()
     
