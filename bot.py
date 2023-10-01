@@ -120,7 +120,7 @@ async def start(client, message):
 
 
 # Generate a response to the user's message
-@Client.on_message(filters.text & filters.private & filters.incoming & ~greeting_filter)
+@Client.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
