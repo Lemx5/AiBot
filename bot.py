@@ -11,11 +11,11 @@ from openai.api_resources import ChatCompletion
 # ------------------ Configuration ------------------
 
 # Environmental Variables
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-PALM_API_KEY = os.environ.get("PALM_API")
-OPENAI_API_KEY = os.environ.get("OPENAI_API")
+API_ID = os.environ.get("API_ID", "11948995")
+API_HASH = os.environ.get("API_HASH", "cdae9279d0105638165415bf2769730d")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "6197051152:AAHb2-RxyQGd1WCqtKHHM20XzxV3tEAfEaA")
+PALM_API_KEY = os.environ.get("PALM_API", "AIzaSyBzo-WEIY25kL5wHQ5H1YUQp2VVANRxWNI")
+OPENAI_API_KEY = os.environ.get("OPENAI_API", "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")
 
 
 # Palm Client Configuration
