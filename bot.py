@@ -13,9 +13,9 @@ from threading import Thread
 id_pattern = re.compile(r'^.\d+$')
 
 # Environmental Variables
-API_ID = os.environ.get("API_ID", "11948995")
-API_HASH = os.environ.get("API_HASH", "cdae9279d0105638165415bf2769730d")
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "6197051152:AAHb2-RxyQGd1WCqtKHHM20XzxV3tEAfEaA")
+API_ID = os.environ.get("API_ID")
+API_HASH = os.environ.get("API_HASH")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 PALM_API_KEY = os.environ.get("PALM_API")
 OPENAI_API_KEY = os.environ.get("OPENAI_API")
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMINS', '2012121532 2141736280 5770959329').split()]
