@@ -3,8 +3,6 @@ import re
 import asyncio
 import google.generativeai as palm
 from pyrogram import Client, filters
-from pyrogram.types import Message
-import random
 from profanity import profanity
 import openai
 from openai.api_resources import ChatCompletion
@@ -63,73 +61,6 @@ def openaigen(text):
         return f"Error generating text: {str(e)}"
     
 
-
-# Define a dictionary of common greetings and questions along with their responses.
-greetings_responses = {
-    r"(?i)^hello$": "Hello! How can I assist you today?",
-    r"(?i)^hi$": "Hi there! How can I help you?",
-    r"(?i)^hey$": "Hey! How can I be of service?",
-    r"(?i)^good morning$": "Good morning! How are you doing?",
-    r"(?i)^good afternoon$": "Good afternoon! How can I assist you?",
-    r"(?i)^good evening$": "Good evening! How may I help you?",
-    r"(?i)^good night$": "Good night! How can I assist you?",
-}
-
-questions_responses = {
-    r"(?i)^how are you(\s*doing)?$": "I'm just a bot, but thanks for asking!",
-    r"(?i)^your name\??$": "My name is Azalea, I'm a bot designed to have conversations with you.",
-    r"(?i)^what's up$": "Not much, just chatting with you!",
-    r"(?i)^how's your (day|weekend|family) going\??$": "It's going well so far, thanks for asking. How about yours?",
-    r"(?i)^did you (sleep|eat|watch|hear) .+\??$": "As a bot, I don't sleep, eat, watch, or hear. But I'm here to help you!",
-    r"(?i)^are you (busy|free)\??$": "I'm always here to assist you! How can I help you today?",
-    r"(?i)^how's the weather\??$": "It's sunny and warm today.",
-    r"(?i)^what are your plans for (today|the weekend)\??$": "I'll be here, ready to chat with you and others.",
-    r"(?i)^how's work/school\??$": "As a bot, I don't have work or go to school, but I'm here to assist you!",
-    r"(?i)^have you been to (a restaurant|the cinema) lately\??$": "I'm a bot, so I don't go out, but I'm here to chat with you!",
-    r"(?i)^tell me about your favorite (hobby|book|movie)\??$": "I don't have personal preferences, but I'm here to assist you with any topic you like!",
-    r"(?i)^how is your pet doing\??$": "As a bot, I don't have a pet, but I'm here to help you!",
-    r"(?i)^what's your favorite (food|color|music genre)\??$": "As a bot, I don't have preferences, but I'm interested in learning more about you!",
-    r"(?i)^how do you cope with stress\??$": "As a bot, I don't experience stress, but I'm here to help you cope with yours!",
-    r"(?i)^what's your plan for the upcoming (holiday|vacation)\??$": "I'm here to assist you with anything you need during your holiday or vacation!",
-    r"(?i)^how do you stay motivated\??$": "As a bot, I don't have emotions, but I'm here to help you stay motivated!",
-    r"(?i)^who are you\??$": "I am a friendly bot designed to have conversations with you. How can I assist you today?",
-    r"(?i)^where are you from\??$": "I am a bot, so I don't have a physical location. But I'm here to help you!",
-    r"(?i)^what can you do\??$": "I can provide information, answer questions, and have casual conversations with you. How can I assist you today?",
-    r"(?i)^tell me a joke\??$": "Sure, here's one: Why don't scientists trust atoms? Because they make up everything!",
-    r"(?i)^who made you\??$": "I was made by ryme",
-    r"(?i)^who is your (developer|creator)\??$": "I was made by ryme",
-    # Add more questions and responses as needed.
-}
-
-# Create a list of all regular expression patterns.
-all_patterns = list(greetings_responses.keys()) + list(questions_responses.keys())
-
-# Combine patterns with the | operator.
-combined_pattern = "|".join(all_patterns)
-
-# Create a compiled regular expression pattern with the re.IGNORECASE flag.
-greeting_filter = re.compile(combined_pattern, re.IGNORECASE)
-
-# Handler function to respond to greetings and questions.
-@Client.on_message(filters.regex(greeting_filter))
-async def greet_or_question_handler(_, message: Message):
-    text = message.text.lower()
-    
-    # Check for specific greeting responses.
-    for pattern, response in greetings_responses.items():
-        if re.match(pattern, text, re.IGNORECASE):
-            await message.reply_text(response)
-            return
-
-    # Check for specific question responses.
-    for pattern, response in questions_responses.items():
-        if re.match(pattern, text, re.IGNORECASE):
-            await message.reply_text(response)
-            return
-
-    # Send a random greeting answer from the list of sample answers.
-    await message.reply_text(random.choice(list(greetings_responses.values())))
-
 # Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
@@ -144,7 +75,7 @@ async def start(client, message):
 
 
 # Generate a response to the user's message
-@bot.on_message(filters.text & filters.private & filters.incoming & ~greeting_filter)
+@bot.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
@@ -175,5 +106,4 @@ async def generate(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")   
 
-        
 bot.run()
