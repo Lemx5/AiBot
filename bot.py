@@ -6,14 +6,19 @@ from pyrogram import Client, filters
 from profanity import profanity
 import openai
 from openai.api_resources import ChatCompletion
+from flask import Flask
+from threading import Thread
 # ------------------ Configuration ------------------
+
+id_pattern = re.compile(r'^.\d+$')
 
 # Environmental Variables
 API_ID = os.environ.get("API_ID", "11948995")
 API_HASH = os.environ.get("API_HASH", "cdae9279d0105638165415bf2769730d")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "6197051152:AAHb2-RxyQGd1WCqtKHHM20XzxV3tEAfEaA")
-PALM_API_KEY = os.environ.get("PALM_API", "AIzaSyBzo-WEIY25kL5wHQ5H1YUQp2VVANRxWNI")
-OPENAI_API_KEY = os.environ.get("OPENAI_API", "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")
+PALM_API_KEY = os.environ.get("PALM_API")
+OPENAI_API_KEY = os.environ.get("OPENAI_API")
+ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMINS', '1247742004 2012121532 2141736280').split()]
 
 
 # Palm Client Configuration
@@ -67,7 +72,7 @@ async def start(client, message):
     try:
         # Send a welcome message to the user
         user_name = message.from_user.first_name
-        await message.reply_text(f"Hi {user_name},\nI am <b>Azalea</b>,\nI can generate answers of your questions")
+        await message.reply_text(f"Hi <b>{user_name}</b>,\nI'm Azalea and I can generate answers of your questions")
 
     except Exception as e:
         # Handle any unexpected errors and log them
@@ -104,6 +109,22 @@ async def generate(client, message):
 
     except Exception as e:
         # Handle any unexpected errors and log them
-        print(f"Error in 'generate' message handler: {e}")   
+        print(f"Error in 'generate' message handler: {e}")
 
-bot.run()
+    finally:
+        await m.delete()    
+
+# Flask configuration
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Hello World!"
+
+def run():
+    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))
+
+if __name__ == "__main__":
+    t = Thread(target=run)
+    t.start()
+    bot.run()      
