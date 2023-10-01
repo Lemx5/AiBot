@@ -107,7 +107,7 @@ greeting_filter = filters.regex(r"|".join(greetings_responses.keys()) + r"|".joi
 
 
 # Start the command handler
-@Client.on_message(filters.command('start', prefixes='/'))
+@bot.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
     try:
         # Send a welcome message to the user
@@ -120,7 +120,7 @@ async def start(client, message):
 
 
 # Generate a response to the user's message
-@Client.on_message(filters.text & filters.private & filters.incoming)
+@bot.on_message(filters.text & filters.private & filters.incoming)
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
