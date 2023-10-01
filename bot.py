@@ -101,13 +101,14 @@ questions_responses = {
     # Add more questions and responses as needed.
 }
 
-# Create a list of all regular expression patterns and join them with the | operator.
-# Create a list of all regular expression patterns and join them with the | operator.
+# Create a list of all regular expression patterns.
 all_patterns = list(greetings_responses.keys()) + list(questions_responses.keys())
+
+# Combine patterns with the | operator.
 combined_pattern = "|".join(all_patterns)
 
-# Create a compiled regular expression pattern.
-greeting_filter = re.compile(combined_pattern)
+# Create a compiled regular expression pattern with the re.IGNORECASE flag.
+greeting_filter = re.compile(combined_pattern, re.IGNORECASE)
 
 # Handler function to respond to greetings and questions.
 @Client.on_message(filters.regex(greeting_filter))
@@ -116,19 +117,18 @@ async def greet_or_question_handler(_, message: Message):
     
     # Check for specific greeting responses.
     for pattern, response in greetings_responses.items():
-        if re.match(pattern, text):
+        if re.match(pattern, text, re.IGNORECASE):
             await message.reply_text(response)
             return
 
     # Check for specific question responses.
     for pattern, response in questions_responses.items():
-        if re.match(pattern, text):
+        if re.match(pattern, text, re.IGNORECASE):
             await message.reply_text(response)
             return
 
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
-
 
 # Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
