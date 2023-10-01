@@ -101,8 +101,32 @@ questions_responses = {
     # Add more questions and responses as needed.
 }
 
-# Create a filter to match any of the greeting or question patterns.
-greeting_filter = filters.regex(r"|".join(list(greetings_responses.keys()) + list(questions_responses.keys())))
+# Create a list of all regular expression patterns and join them with the | operator.
+all_patterns = list(greetings_responses.keys()) + list(questions_responses.keys())
+combined_pattern = "|".join(f"({pattern})" for pattern in all_patterns)
+
+# Create a compiled regular expression pattern.
+greeting_filter = re.compile(combined_pattern)
+
+# Handler function to respond to greetings and questions.
+@bot.on_message(filters.regex(greeting_filter))
+async def greet_or_question_handler(_, message: Message):
+    text = message.text.lower()
+    
+    # Check for specific greeting responses.
+    for pattern, response in greetings_responses.items():
+        if re.match(pattern, text):
+            await message.reply_text(response)
+            return
+
+    # Check for specific question responses.
+    for pattern, response in questions_responses.items():
+        if re.match(pattern, text):
+            await message.reply_text(response)
+            return
+
+    # Send a random greeting answer from the list of sample answers.
+    await message.reply_text(random.choice(list(greetings_responses.values())))
 
 
 # Start the command handler
@@ -119,7 +143,7 @@ async def start(client, message):
 
 
 # Generate a response to the user's message
-@bot.on_message(filters.text & filters.private & filters.incoming)
+@bot.on_message(filters.text & filters.private & filters.incoming & ~greeting_filter)
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
@@ -151,26 +175,4 @@ async def generate(client, message):
         print(f"Error in 'generate' message handler: {e}")   
 
         
-      
-# Handler function to respond to greetings and questions.
-@Client.on_message(greeting_filter)
-async def greet_or_question_handler(_, message: Message):
-    text = message.text.lower()
-    
-    # Check for specific greeting responses.
-    for pattern, response in greetings_responses.items():
-        if re.match(pattern, text):
-            await message.reply_text(response)
-            return
-
-    # Check for specific question responses.
-    for pattern, response in questions_responses.items():
-        if re.match(pattern, text):
-            await message.reply_text(response)
-            return
-
-    # Send a random greeting answer from the list of sample answers.
-    await message.reply_text(random.choice(list(greetings_responses.values())))
-
-
 bot.run()
