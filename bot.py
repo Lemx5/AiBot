@@ -100,10 +100,9 @@ questions_responses = {
     r"(?i)^who is your (developer|creator)\??$": "I was made by ryme",
     # Add more questions and responses as needed.
 }
-'''
+
 # Create a filter to match any of the greeting or question patterns.
 greeting_filter = filters.regex(r"|".join(greetings_responses.keys()) + r"|".join(questions_responses.keys()))
-'''
 
 
 # Start the command handler
@@ -152,7 +151,7 @@ async def generate(client, message):
         print(f"Error in 'generate' message handler: {e}")   
 
         
-'''        
+      
 # Handler function to respond to greetings and questions.
 @Client.on_message(greeting_filter)
 async def greet_or_question_handler(_, message: Message):
@@ -172,6 +171,6 @@ async def greet_or_question_handler(_, message: Message):
 
     # Send a random greeting answer from the list of sample answers.
     await message.reply_text(random.choice(list(greetings_responses.values())))
-'''
+
 
 bot.run()
