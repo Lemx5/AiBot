@@ -102,7 +102,7 @@ questions_responses = {
 }
 
 # Create a filter to match any of the greeting or question patterns.
-greeting_filter = filters.regex(r"|".join(greetings_responses.keys()) + r"|".join(questions_responses.keys()))
+greeting_filter = filters.regex(r"|".join(list(greetings_responses.keys()) + list(questions_responses.keys())))
 
 
 # Start the command handler
