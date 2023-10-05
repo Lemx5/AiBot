@@ -1,5 +1,5 @@
 # PaLM
-A Telegram Bot based on PaLM AI
+A Telegram Bot based on OpenAi and PaLM
 
 ### Installation
 ```python
