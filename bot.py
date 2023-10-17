@@ -154,14 +154,11 @@ async def generate(client, message):
             response = openaigen(message.text)
 
         # Send the response to the user
-        await message.reply_text(response)        
+        await m.edit(response)        
 
     except Exception as e:
         # Handle any unexpected errors and log them
         print(f"Error in 'generate' message handler: {e}")
-
-    finally:
-        await m.delete()    
 
 # Flask configuration
 app = Flask(__name__)
