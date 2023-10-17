@@ -80,9 +80,8 @@ async def common(client, message):
     for pattern, response in patterns_responses.items():
         if re.search(pattern, message.text, re.IGNORECASE):
             await message.reply_text(response)
-            break  # Exit after sending the first matching response
-
-
+            return
+        
 # ------------------ Palm Generator ------------------
 def palmgen(text):
     try:
