@@ -42,7 +42,7 @@ patterns_responses = ({
     r"(where are you from)": "I'm from the digital realm!",
     r"(who made you)": "I was crafted by skilled developers.",
     r"(what can you do)": "I can answer questions, assist with tasks, and more.",
-    r"(what is your name)": "I'm called Azalea.",
+    r"(what is your name)": "I'm called Azi.",
     r"(good (morning|afternoon|evening|night))": "Hello! How can I be of service?",
     r"(thanks|thank you)": "You're most welcome!",
     r"(bye|goodbye)": "Farewell! Feel free to return if you have more questions.",
