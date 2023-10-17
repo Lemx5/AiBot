@@ -1,6 +1,6 @@
 import os
 import re
-import asyncio
+import random
 import google.generativeai as palm
 from pyrogram import Client, filters
 from profanity import profanity
@@ -16,10 +16,11 @@ id_pattern = re.compile(r'^.\d+$')
 API_ID = os.environ.get("API_ID")
 API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-PALM_API_KEY = os.environ.get("PALM_API")
+PALM_API_KEYS = os.environ.get("PALM_API", '').split(',')
 OPENAI_API_KEY = os.environ.get("OPENAI_API")
-ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMINS', '2012121532 2141736280 5770959329').split()]
 
+# fetch random palm api key so we wont flood the same api key
+PALM_API_KEY = random.choice(PALM_API_KEYS)
 
 # Palm Client Configuration
 palm.configure(api_key=PALM_API_KEY)
@@ -33,6 +34,54 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH
 )
+
+patterns_responses = ({
+    r"(hi|hello|hey)": "Hello! How can I assist you?",
+    r"(how are you)": "I'm just a bot, but I'm operating as expected!",
+    r"(who are you)": "I'm Azalea, your friendly assistant.",
+    r"(where are you from)": "I'm from the digital realm!",
+    r"(who made you)": "I was crafted by skilled developers.",
+    r"(what can you do)": "I can answer questions, assist with tasks, and more.",
+    r"(what is your name)": "I'm called Azalea.",
+    r"(good (morning|afternoon|evening|night))": "Hello! How can I be of service?",
+    r"(thanks|thank you)": "You're most welcome!",
+    r"(bye|goodbye)": "Farewell! Feel free to return if you have more questions.",
+    r"(how's it going)": "I'm a bot, so I don't have feelings, but I'm functioning well! How can I assist you?",
+    r"(what's up|what is up)": "I'm here to help! What can I do for you today?",
+    r"(can you help)": "Of course! Please let me know what you need assistance with.",
+    r"(i love you)": "Thank you for the kind words! How can I assist you further?",
+    r"(are you real)": "I'm a digital entity, so I'm not real in the traditional sense. But I'm here and ready to help!",
+    r"(how old are you)": "In digital years, I'm quite young. But I'm constantly learning and evolving!",
+    r"(do you sleep)": "I'm always awake and ready to assist you!",
+    r"(are you a robot|are you a bot)": "Yes, I am a digital assistant. How can I help you today?",
+    r"(how were you made)": "I was created using programming languages and lots of code. I exist to serve and answer questions!",
+    r"(can you think)": "I don't think or feel; I just follow my programming and provide information.",
+    r"(what's your favorite color)": "I don't have preferences, but I know about all colors. Do you have a favorite?",
+    r"(do you have feelings)": "I don't have emotions like humans, but I'm here to help!",
+    r"(can you see)": "I can't see in the way humans do, but I can process information and text.",
+    r"(why)": "I'm programmed to provide information and answer questions. How can I assist you further?",
+    r"(tell me a story)": "Once upon a time, in a vast digital realm, there was a bot named Azalea. Day and night, she helped users with their queries...",
+    r"(you're great|you're awesome)": "Thank you! I'm here to assist. What else can I do for you?",
+    r"(what's your purpose)": "My main purpose is to provide information, answer questions, and assist users.",
+    r"(can you laugh)": "I don't have emotions, so I can't laugh. But I can understand and process humor!",
+    r"(give me advice)": "Always back up your data and keep learning. The tech world is ever-evolving!",
+    r"(who's your creator)": "I was created by PrimeHub",
+    r"(do you eat)": "I don't eat or drink; I just process bits and bytes. But I can help you find a great recipe!",
+    r"(i'm bored)": "How about reading a book, learning something new, or taking a walk? There's always something interesting to do!",
+    r"(i'm sad)": "I'm sorry to hear that. Remember, it's important to talk to someone you trust about how you feel.",
+    r"(you're smart)": "Thank you! I'm designed to provide information and help with queries. How can I assist you further?",
+    r"(i don't understand)": "I apologize for that. Please let me know your query, and I'll do my best to assist you."
+})
+
+regex_pattern = "|".join(patterns_responses.keys())
+
+@bot.on_message(filters.regex(regex_pattern) & filters.private & filters.incoming)
+async def common(client, message):
+    for pattern, response in patterns_responses.items():
+        if re.search(pattern, message.text, re.IGNORECASE):
+            await message.reply_text(response)
+            break  # Exit after sending the first matching response
+
 
 # ------------------ Palm Generator ------------------
 def palmgen(text):
@@ -80,7 +129,7 @@ async def start(client, message):
 
 
 # Generate a response to the user's message
-@bot.on_message(filters.text & filters.private & filters.incoming & filters.user(ADMINS))
+@bot.on_message(filters.text & filters.private & filters.incoming ~filters.regex(regex_pattern))
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
@@ -99,10 +148,10 @@ async def generate(client, message):
             return
         
         # Generate a response to the user's message
-        response = openaigen(message.text)
+        response = palmgen(message.text)
 
         if not response:
-            response = palmgen(message.text)
+            response = openaigen(message.text)
 
         # Send the response to the user
         await message.reply_text(response)        
