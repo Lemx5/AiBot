@@ -75,13 +75,7 @@ patterns_responses = ({
 
 regex_pattern = "|".join(patterns_responses.keys())
 
-@bot.on_message(filters.regex(regex_pattern) & filters.private & filters.incoming)
-async def common(client, message):
-    for pattern, response in patterns_responses.items():
-        if re.search(pattern, message.text, re.IGNORECASE):
-            await message.reply_text(response)
-            return
-        
+
 # ------------------ Palm Generator ------------------
 def palmgen(text):
     try:
@@ -126,9 +120,16 @@ async def start(client, message):
         # Handle any unexpected errors and log them
         print(f"Error in 'start' command handler: {e}")
 
-
+# generate response from patterns
+@bot.on_message(filters.regex(regex_pattern) & filters.private & filters.incoming)
+async def common(client, message):
+    for pattern, response in patterns_responses.items():
+        if re.search(pattern, message.text, re.IGNORECASE):
+            await message.reply_text(response)
+            return
+        
 # Generate a response to the user's message
-@bot.on_message(filters.text & filters.private & filters.incoming ~filters.regex(regex_pattern))
+@bot.on_message(filters.text & filters.private & filters.incoming & ~filters.regex(regex_pattern))
 async def generate(client, message):
                                   
     m = await message.reply_text("Generating...")
