@@ -128,7 +128,6 @@ async def common(client, message):
 @bot.on_message(filters.text & filters.private & filters.incoming & ~filters.regex(regex_pattern))
 async def generate(client, message):
                                   
-    m = await message.reply_text("Generating...")
     try:
         if message.text.startswith('/'):
             return
@@ -143,6 +142,8 @@ async def generate(client, message):
             await message.reply_text("Sorry, I cannot respond to inappropriate messages.")
             return        
         
+        m = await message.reply_text("Generating...")
+
         # Generate a response to the user's message
         response = palmgen(message.text)
 
