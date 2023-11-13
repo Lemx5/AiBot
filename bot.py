@@ -7,6 +7,7 @@ import openai
 from openai import ChatCompletion
 from flask import Flask
 from threading import Thread
+from profanity import profanity
 # ------------------ Configuration ------------------
 
 id_pattern = re.compile(r'^.\d+$')
@@ -137,6 +138,11 @@ async def generate(client, message):
         if re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.text):
             await message.reply_text("Sorry, I have been restricted to give information on external links.")
             return
+        
+        # Check if the user's message contains any inappropriate words
+        if profanity.contains_profanity(message.text):
+            await message.reply_text("Sorry, I cannot respond to inappropriate messages.")
+            return        
         
         # Generate a response to the user's message
         response = palmgen(message.text)
