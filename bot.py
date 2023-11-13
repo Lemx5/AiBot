@@ -5,7 +5,7 @@ import google.generativeai as palm
 from pyrogram import Client, filters
 from profanity import profanity
 import openai
-from openai.api_resources import ChatCompletion
+from openai import ChatCompletion
 from flask import Flask
 from threading import Thread
 # ------------------ Configuration ------------------
