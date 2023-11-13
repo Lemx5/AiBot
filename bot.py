@@ -3,7 +3,6 @@ import re
 import random
 import google.generativeai as palm
 from pyrogram import Client, filters
-from profanity import profanity
 import openai
 from openai import ChatCompletion
 from flask import Flask
@@ -38,7 +37,7 @@ bot = Client(
 patterns_responses = ({
     r"(hi|hello|hey)": "Hello! How can I assist you?",
     r"(how are you)": "I'm just a bot, but I'm operating as expected!",
-    r"(who are you)": "I'm Azalea, your friendly assistant.",
+    r"(who are you)": "I'm Jenie, your friendly assistant.",
     r"(where are you from)": "I'm from the digital realm!",
     r"(who made you)": "I was crafted by skilled developers.",
     r"(what can you do)": "I can answer questions, assist with tasks, and more.",
@@ -114,7 +113,7 @@ async def start(client, message):
     try:
         # Send a welcome message to the user
         user_name = message.from_user.first_name
-        await message.reply_text(f"Hi <b>{user_name}</b>,\nI'm Azalea and I can generate answers of your questions")
+        await message.reply_text(f"Hi <b>{user_name}</b>,\nI'm Jenie and I can generate answers of your questions")
 
     except Exception as e:
         # Handle any unexpected errors and log them
@@ -135,11 +134,6 @@ async def generate(client, message):
     m = await message.reply_text("Generating...")
     try:
         if message.text.startswith('/'):
-            return
-        
-        # Check if the user's message contains any inappropriate words
-        if profanity.contains_profanity(message.text):
-            await message.reply_text("Sorry, I cannot respond to inappropriate messages.")
             return
 
         # check if the user's message contains any external links
