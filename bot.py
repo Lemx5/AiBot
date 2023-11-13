@@ -12,11 +12,11 @@ from threading import Thread
 id_pattern = re.compile(r'^.\d+$')
 
 # Environmental Variables
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-PALM_API_KEYS = os.environ.get("PALM_API", '').split(',')
-OPENAI_API_KEY = os.environ.get("OPENAI_API")
+API_ID = os.getenv("API_ID")
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+PALM_API_KEYS = os.getenv("PALM_API", '').split(',')
+OPENAI_API_KEY = os.getenv("OPENAI_API")
 
 # fetch random palm api key so we wont flood the same api key
 PALM_API_KEY = random.choice(PALM_API_KEYS)
