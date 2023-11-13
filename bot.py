@@ -107,14 +107,9 @@ def openaigen(text):
 # Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(client, message):
-    try:
-        # Send a welcome message to the user
-        user_name = message.from_user.first_name
-        await message.reply_text(f"Hi <b>{user_name}</b>,\nI'm Jenie and I can generate answers of your questions")
-
-    except Exception as e:
-        # Handle any unexpected errors and log them
-        print(f"Error in 'start' command handler: {e}")
+    # Send a welcome message to the user
+    user_name = message.from_user.first_name
+    await message.reply_text(f"Hi <b>{user_name}</b>,\nI'm Jenie and I can generate answers of your questions")
 
 # generate response from patterns
 @bot.on_message(filters.regex(regex_pattern) & filters.private & filters.incoming)
