@@ -1,6 +1,5 @@
 import os
 import re
-import random
 import google.generativeai as palm
 from pyrogram import Client, filters
 import openai
