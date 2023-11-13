@@ -15,11 +15,8 @@ id_pattern = re.compile(r'^.\d+$')
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-PALM_API_KEYS = os.getenv("PALM_API", '').split(',')
+PALM_API_KEY = os.getenv("PALM_API", '')
 OPENAI_API_KEY = os.getenv("OPENAI_API")
-
-# fetch random palm api key so we wont flood the same api key
-PALM_API_KEY = random.choice(PALM_API_KEYS)
 
 # Palm Client Configuration
 palm.configure(api_key=PALM_API_KEY)
