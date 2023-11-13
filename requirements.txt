@@ -1,4 +1,5 @@
 pyrogram
 tgcrypto
-profanity
+google-generativeai
+openai
 flask
