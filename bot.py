@@ -2,8 +2,6 @@ import os
 import re
 import google.generativeai as genai
 from pyrogram import Client, filters
-import openai
-from openai import ChatCompletion
 from flask import Flask
 from threading import Thread
 from profanity import profanity
@@ -18,8 +16,6 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # gemini Client Configuration
 genai.configure(api_key=os.getenv("PALM_API"))
-# openai api key
-openai.api_key = os.getenv("OPENAI_API")
 
 # Pyrogram Client Configuration
 bot = Client(
@@ -50,7 +46,7 @@ patterns_responses = ({
 regex_pattern = "|".join(patterns_responses.keys())
 
 
-# ------------------ Palm Generator ------------------
+# ------------------ Gemini ------------------
 def gemini(text):
     try:
 
@@ -84,9 +80,7 @@ def gemini(text):
                               generation_config=generation_config,
                               safety_settings=safety_settings)
 
-        prompt_parts = [
-          "Write a story about a magic backpack",
-        ]        
+        prompt_parts = [text]        
 
         response = model.generate_content(prompt_parts)
         return response.text
@@ -94,21 +88,6 @@ def gemini(text):
     except Exception as e:
         return f"Error generating text: {str(e)}"
 
-# ------------------ OpenAI Generator ------------------
-def chatgpt(text):
-    messages = [{"role": "assistant", "content": text}]
-    try:
-        MODEL = "gpt-3.5-turbo"    # gpt-3.5-turbo model
-        resp = ChatCompletion.create(
-            model=MODEL,
-            messages=messages,
-            temperature=0.2,
-        )
-        rep = resp['choices'][0]["message"]["content"]
-        return rep
-    except Exception as e:
-        return f"Error generating text: {str(e)}"
-    
 
 # Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
@@ -147,9 +126,6 @@ async def generate(client, message):
 
         # Generate a response to the user's message
         response = gemini(message.text)
-
-        if not response:
-            response = chatgpt(message.text)
 
         # Send the response to the user
         await m.edit(response)        
