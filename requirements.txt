@@ -1,6 +1,6 @@
 pyrogram
 tgcrypto
-google-generativeai
+google-generativelanguage
 openai==0.28
 flask
 profanity
