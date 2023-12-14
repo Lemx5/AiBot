@@ -15,13 +15,11 @@ id_pattern = re.compile(r'^.\d+$')
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-PALM_API_KEY = os.getenv("PALM_API", '')
-OPENAI_API_KEY = os.getenv("OPENAI_API")
 
-# Palm Client Configuration
-genai.configure(api_key=PALM_API_KEY)
+# gemini Client Configuration
+genai.configure(api_key=os.getenv("PALM_API"))
 # openai api key
-openai.api_key = OPENAI_API_KEY
+openai.api_key = os.getenv("OPENAI_API")
 
 # Pyrogram Client Configuration
 bot = Client(
