@@ -19,7 +19,7 @@ genai.configure(api_key=os.getenv("PALM_API"))
 
 # Pyrogram Client Configuration
 bot = Client(
-    name="PalmUserBot",
+    name="geminibot",
     bot_token=BOT_TOKEN,
     api_id=API_ID,
     api_hash=API_HASH
