@@ -1,5 +1,5 @@
-# PaLM
-A Telegram Bot based on OpenAi and PaLM
+# Gemini Telegram Bot
+A Telegram Bot based on Google's Gemini-pro
 
 ### Installation
 ```python
