@@ -9,7 +9,7 @@ COPY . /app/
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
-    && pip install -r requirements.txt && pip install google-generativeai
+    && pip install -r requirements.txt
 
 # Expose port 8080 for Flask
 EXPOSE 8080
