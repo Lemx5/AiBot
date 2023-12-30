@@ -13,9 +13,10 @@ id_pattern = re.compile(r'^.\d+$')
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 
 # gemini Client Configuration
-gem.configure(api_key=os.getenv("GENAI_API_KEY"))
+gem.configure(api_key=GENAI_API_KEY)
 
 # Pyrogram Client Configuration
 bot = Client(
