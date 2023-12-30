@@ -50,8 +50,9 @@ regex_pattern = "|".join(patterns_responses.keys())
 def google(text):
     try:
         model = gem.GenerativeModel("gemini-pro")  
-        response = model.generate_content(text)
-        return response.text
+        convo = model.start_chat(history=[])
+        convo.send_message(text)
+        return convo.last.text
     
     except Exception as e:
         return f"Error generating text: {str(e)}"
