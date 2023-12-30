@@ -49,14 +49,14 @@ regex_pattern = "|".join(patterns_responses.keys())
 
 # ------------------ Gemini ------------------
 def google(text):
-    prompt_parts = []
     try:
         model = gem.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt_parts)
-        prompt_parts.append(f"{text}\n{response.text}")
+        convo = model.start_chat(history=[])
+        convo.send_message(text)
+        return convo.last.text
     except Exception as e:
         return f"Error generating text: {str(e)}"
-    return '\n'.join(prompt_parts), response
+    
 
 # Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
@@ -94,7 +94,7 @@ async def generate(client, message):
         m = await message.reply_text("Generating...")
 
         # Generate a response to the user's message
-        _, response = google(message.text)
+        response = google(message.text)
 
         # Send the response to the user
         await m.edit(response)        
