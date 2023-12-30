@@ -15,7 +15,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # gemini Client Configuration
-genai.configure(api_key=os.getenv("PALM_API"))
+genai.configure(api_key=os.getenv("GENAI_API_KEY"))
 
 # Pyrogram Client Configuration
 bot = Client(
@@ -49,7 +49,7 @@ regex_pattern = "|".join(patterns_responses.keys())
 # ------------------ Gemini ------------------
 def google(text):
     try:
-        model = genai.GenerativeModel(model_name='gemini-pro')    
+        model = genai.GenerativeModel("gemini-pro")  
         response = model.generate_content(text)
         return response.text
     
