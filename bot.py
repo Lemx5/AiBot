@@ -48,10 +48,12 @@ regex_pattern = "|".join(patterns_responses.keys())
 
 # ------------------ Gemini ------------------
 def google(text):
+    history = []
     try:
         model = gem.GenerativeModel("gemini-pro")  
-        convo = model.start_chat(history=[])
+        convo = model.start_chat(history=history)
         convo.send_message(text)
+        history.append(convo.last.text)
         return convo.last.text
     
     except Exception as e:
