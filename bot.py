@@ -1,7 +1,6 @@
 import os
 import re
-import google.generativeai as generativeai
-from google.generativeai import GenerativeModel
+import google.generativeai as gen
 from pyrogram import Client, filters
 from flask import Flask
 from threading import Thread
@@ -16,7 +15,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # gemini Client Configuration
-generativeai.configure(api_key=os.getenv("GENAI_API_KEY"))
+gen.configure(api_key=os.getenv("GENAI_API_KEY"))
 
 # Pyrogram Client Configuration
 bot = Client(
@@ -50,7 +49,7 @@ regex_pattern = "|".join(patterns_responses.keys())
 # ------------------ Gemini ------------------
 def google(text):
     try:
-        model = GenerativeModel("gemini-pro")  
+        model = gen.GenerativeModel("gemini-pro")  
         response = model.generate_content(text)
         return response.text
     
