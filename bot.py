@@ -63,7 +63,7 @@ def google(user_id, text):
         })
 
         # Start the chat with the user's history
-        convo = model.start_chat(history=histories[user_id])
+        convo = model.start_chat(history=histories[user_id][:-1])  # Exclude the last user message
         convo.send_message(text)
 
         # Add the model's response to the user's history
