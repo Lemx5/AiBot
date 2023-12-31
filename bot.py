@@ -57,6 +57,10 @@ def google(user_id, text):
         if user_id not in histories:
             histories[user_id] = []
 
+        # If the user's history has 10 or more messages, remove the oldest one
+        if len(histories[user_id]) >= 10:
+            histories[user_id].pop(0)
+
         # Add the user's message to their history
         histories[user_id].append({
             "role": "user",
@@ -67,6 +71,10 @@ def google(user_id, text):
         convo = model.start_chat(history=histories[user_id][:-1])  # Exclude the last user message
         convo.send_message(text)
 
+        # If the user's history has 10 or more messages, remove the oldest one
+        if len(histories[user_id]) >= 10:
+            histories[user_id].pop(0)
+
         # Add the model's response to the user's history
         histories[user_id].append({
             "role": "model",
@@ -75,6 +83,7 @@ def google(user_id, text):
         return f"{convo.last.text}"
     except Exception as e:
         return f"Error generating text: {str(e)}"
+            
 
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
@@ -135,4 +144,4 @@ def run():
 if __name__ == "__main__":
     t = Thread(target=run)
     t.start()
-    bot.run()      
+    bot.run()
