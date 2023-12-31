@@ -64,10 +64,14 @@ async def start(_, message):
     await message.reply_text(
         f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I can help in finding answers of your questions"
         )
+    
+@bot.on_message(filters.media & filters.private & filters.incoming)
+async def media(_, message):
+    await message.reply_text("Sorry, I have been restricted to give information on media files.")    
 
 @bot.on_message(filters.text & filters.private & filters.incoming)
 async def generate(_, message):
-    if message.text.startswith('/'):
+    if message.text.startswith("/"):
         return
     # check if the user's message contains any external links
     if re.search(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", message.text):
