@@ -5,20 +5,14 @@ from pyrogram import Client, filters
 from flask import Flask
 from threading import Thread
 from profanity import profanity
-# ------------------ Configuration ------------------
 
-id_pattern = re.compile(r'^.\d+$')
-
-# Environmental Variables
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 
-# gemini Client Configuration
 gem.configure(api_key=GENAI_API_KEY)
 
-# Pyrogram Client Configuration
 bot = Client(
     name="geminibot",
     bot_token=BOT_TOKEN,
@@ -36,14 +30,12 @@ def google(text):
         return f"Error generating text: {str(e)}"
     
 
-# Start the command handler
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
     await message.reply_text(
         f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I can help in finding answers of your questions"
         )
 
-# Generate a response to the user's message
 @bot.on_message(filters.text & filters.private & filters.incoming)
 async def generate(_, message):
     if message.text.startswith('/'):
@@ -63,7 +55,6 @@ async def generate(_, message):
     except Exception as e:
         print(f"Error in 'generate' message handler: {e}")
 
-# Flask configuration
 app = Flask(__name__)
 
 @app.route('/')
