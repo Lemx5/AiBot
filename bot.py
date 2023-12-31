@@ -20,7 +20,8 @@ bot = Client(
     api_hash=API_HASH
 )
 
-def google(text):
+histories = {}
+def google(user_id, text):
     try:
         generation_config = {
             "temperature": 0.5,
@@ -52,12 +53,27 @@ def google(text):
                               generation_config=generation_config,
                               safety_settings=safety_settings)
         
-        convo = model.start_chat(history=[])
+        if user_id not in histories:
+            histories[user_id] = []
+
+        # Add the user's message to their history
+        histories[user_id].append({
+            "role": "user",
+            "parts": text
+        })
+
+        # Start the chat with the user's history
+        convo = model.start_chat(history=histories[user_id])
         convo.send_message(text)
+
+        # Add the model's response to the user's history
+        histories[user_id].append({
+            "role": "model",
+            "parts": convo.last.text
+        })
         return convo.last.text
     except Exception as e:
         return f"Error generating text: {str(e)}"
-    
 
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
@@ -83,7 +99,7 @@ async def generate(_, message):
         return         
     try:
         m = await message.reply_text("Processing...")
-        response = google(message.text)
+        response = google(message.from_user.id, message.text)
         await m.edit(response)        
     except Exception as e:
         print(f"Error in 'generate' message handler: {e}")
