@@ -5,6 +5,7 @@ from pyrogram import Client, filters
 from flask import Flask
 from threading import Thread
 from profanity import profanity
+import json
 
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
@@ -80,6 +81,24 @@ async def start(_, message):
     await message.reply_text(
         f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I can help in finding answers of your questions"
         )
+    
+@bot.on_message(filters.command('clear', prefixes='/'))
+async def delete_history(_, message):
+    user_id = message.from_user.id
+    if user_id in histories:
+        del histories[user_id]
+        await message.reply_text("Your conversation history has been deleted.")
+    else:
+        await message.reply_text("You have no conversation history.")
+
+@bot.on_message(filters.command('history', prefixes='/'))
+async def read_history(_, message):
+    user_id = message.from_user.id
+    if user_id in histories:
+        history_json = json.dumps(histories[user_id], indent=4)
+        await message.reply_text(history_json)
+    else:
+        await message.reply_text("You have no conversation history.")
     
 @bot.on_message(filters.media & filters.private & filters.incoming)
 async def media(_, message):
