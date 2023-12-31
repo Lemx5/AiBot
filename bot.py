@@ -60,7 +60,7 @@ def google(user_id, text):
         # Add the user's message to their history
         histories[user_id].append({
             "role": "user",
-            "parts": text
+            "parts": f"{text}"
         })
 
         # Start the chat with the user's history
@@ -70,9 +70,9 @@ def google(user_id, text):
         # Add the model's response to the user's history
         histories[user_id].append({
             "role": "model",
-            "parts": convo.last.text
+            "parts": f"{convo.last.text}"
         })
-        return convo.last.text
+        return f"{convo.last.text}"
     except Exception as e:
         return f"Error generating text: {str(e)}"
 
