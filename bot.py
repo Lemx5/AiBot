@@ -95,7 +95,7 @@ async def delete_history(_, message):
         del histories[user_id]
         await message.reply_text("Your conversation history has been deleted.")
     else:
-        await message.reply_text("You have no conversation history.")
+        await message.reply_text("No conversation found.")
 
 @bot.on_message(filters.command('log', prefixes='/'))
 async def read_log(_, message):
@@ -116,7 +116,7 @@ async def read_history(_, message):
             user_msg = pair[0]["parts"]
             model_msg = pair[1]["parts"]
             history_text += f"<b>{user_name}</b>: <code>{user_msg}</code>\n<b>Model</b>: <code>{model_msg}</code>\n\n"
-        await message.reply_text(f"{history_text}\n\n <b>Note:</b> This uses python in-built dictionary so your chat history stored as temporary.")
+        await message.reply_text(f"{history_text}\n\n <b>Note:</b> This uses python in-built dictionary so your chat history stored as temporary, and it only saves last 10 messages to avoid memory outage.")
     else:
         await message.reply_text("You have no conversation history.")
     
