@@ -85,7 +85,7 @@ def google(user_id, text):
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
     await message.reply_text(
-        f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I'm your ai bot. I can chat with you. Just send me a message.",
+        f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I can chat with you or I can answer your questions. Just ask me!",
         )
     
 @bot.on_message(filters.command('clear', prefixes='/'))
@@ -104,7 +104,7 @@ async def read_log(_, message):
         history_json = json.dumps(histories[user_id], indent=4)
         await message.reply_text(history_json)
     else:
-        await message.reply_text("You have no conversation history.")
+        await message.reply_text("No logs found.")
 
 @bot.on_message(filters.command('history', prefixes='/'))
 async def read_history(_, message):
@@ -115,7 +115,7 @@ async def read_history(_, message):
         for pair in histories[user_id]:
             user_msg = pair[0]["parts"]
             model_msg = pair[1]["parts"]
-            history_text += f"{user_name}: {user_msg}\nModel: {model_msg}\n\n"
+            history_text += f"<b>{user_name}<>/b: <code>{user_msg}</code>\n<b>Model</b>: <code>{model_msg}</code>\n\n"
         await message.reply_text(history_text)
     else:
         await message.reply_text("You have no conversation history.")
