@@ -25,7 +25,7 @@ bot = Client(
 )
 
 kol = pytz.timezone('Asia/Kolkata')
-current_hour = kol.localize(datetime.datetime.now()).hour
+current_hour = kol.localize(datetime.now()).hour
 
 if current_hour < 12:
     wish = "Good Morning"
