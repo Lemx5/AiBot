@@ -86,7 +86,7 @@ def google(user_id, text):
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
     await message.reply_text(
-        f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I can help in finding answers of your questions"
+        f"Hi <b>{message.from_user.first_name}</b>,\nI'm Gemini & I'm your ai bot. I can chat with you. Just send me a message.",
         )
     
 @bot.on_message(filters.command('clear', prefixes='/'))
