@@ -97,12 +97,26 @@ async def delete_history(_, message):
     else:
         await message.reply_text("You have no conversation history.")
 
-@bot.on_message(filters.command('history', prefixes='/'))
-async def read_history(_, message):
+@bot.on_message(filters.command('log', prefixes='/'))
+async def read_log(_, message):
     user_id = message.from_user.id
     if user_id in histories:
         history_json = json.dumps(histories[user_id], indent=4)
         await message.reply_text(history_json)
+    else:
+        await message.reply_text("You have no conversation history.")
+
+@bot.on_message(filters.command('history', prefixes='/'))
+async def read_history(_, message):
+    user_id = message.from_user.id
+    user_name = message.from_user.first_name
+    if user_id in histories:
+        history_text = ""
+        for pair in histories[user_id]:
+            user_msg = pair[0]["parts"]
+            model_msg = pair[1]["parts"]
+            history_text += f"{user_name}: {user_msg}\nModel: {model_msg}\n\n"
+        await message.reply_text(history_text)
     else:
         await message.reply_text("You have no conversation history.")
     
