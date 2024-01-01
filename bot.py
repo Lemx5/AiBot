@@ -116,7 +116,7 @@ async def read_history(_, message):
             user_msg = pair[0]["parts"]
             model_msg = pair[1]["parts"]
             history_text += f"<b>{user_name}</b>: <code>{user_msg}</code>\n<b>Model</b>: <code>{model_msg}</code>\n\n"
-        await message.reply_text(history_text)
+        await message.reply_text(f"{history_text}\n\n <b>Note:</b> This uses python in-built dictionary so your chat history stored as temporary.")
     else:
         await message.reply_text("You have no conversation history.")
     
