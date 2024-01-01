@@ -63,7 +63,7 @@ def google(user_id, text):
             histories[user_id] = deque(maxlen=10)
 
         # Start the chat with the user's history
-        convo = model.start_chat(history=histories[user_id])  # Include the last user message
+        convo = model.start_chat(history=[item for sublist in histories[user_id] for item in sublist])  # Flatten the list of lists
         convo.send_message(text)
 
         # Add the user's message and the model's response to the history together
