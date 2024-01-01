@@ -109,7 +109,7 @@ async def read_log(_, message):
 @bot.on_message(filters.command('history', prefixes='/'))
 async def read_history(_, message):
     user_id = message.from_user.id
-    user_name = message.from_user.first_name
+    user_name = message.from_user.first_name + " " + message.from_user.last_name if message.from_user.last_name else "You"
     if user_id in histories:
         history_text = ""
         for pair in histories[user_id]:
