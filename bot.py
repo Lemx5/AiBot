@@ -85,7 +85,7 @@ def gemini(user_id, text):
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
     await message.reply_text(
-        f"Hi <b>{message.from_user.mention}</b>,\nI'm Gemini & I can chat with you or I can answer your questions. Just ask me!",
+        f"Hi <b>{message.from_user.mention}</b>,\nI'm Gemini & I can chat with you or answer your questions. Just ask!",
         )
     
 @bot.on_message(filters.command('clear', prefixes='/'))
