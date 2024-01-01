@@ -122,7 +122,7 @@ async def read_history(_, message):
     
 @bot.on_message(filters.media & filters.private & filters.incoming)
 async def media(_, message):
-    await message.reply_text("Sorry, I have been restricted to give information on media files.")    
+    await message.reply_text("Sorry, I have been restricted to give information on media files.")  
 
 @bot.on_message(filters.text & filters.private & filters.incoming)
 async def generate(_, message):
