@@ -109,14 +109,13 @@ async def read_log(_, message):
 @bot.on_message(filters.command('history', prefixes='/'))
 async def read_history(_, message):
     user_id = message.from_user.id
-    user_name = message.from_user.first_name + " " + message.from_user.last_name if message.from_user.last_name else "You"
     if user_id in histories:
         history_text = ""
         for pair in histories[user_id]:
             user_msg = pair[0]["parts"]
             model_msg = pair[1]["parts"]
-            history_text += f"<b>{user_name}</b>: <code>{user_msg}</code>\n<b>Model</b>: <code>{model_msg}</code>\n\n"
-        await message.reply_text(f"{history_text}\n\n<b>Note:</b> This uses python in-built dictionary so your chat history stored as temporary, and it only saves last 10 messages to avoid memory outage.")
+            history_text += f"<b>You</b>: <code>{user_msg}</code>\n<b>Model</b>: <code>{model_msg}</code>\n\n"
+        await message.reply_text(f"{history_text}\n\n<b>Note</b>: This uses a Python dictionary to temporarily store your last 10 chat messages, preventing memory outage")
     else:
         await message.reply_text("You have no conversation history.")
     
