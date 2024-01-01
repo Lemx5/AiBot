@@ -6,6 +6,7 @@ from flask import Flask
 from threading import Thread
 from profanity import profanity
 import json
+from collections import deque
 
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
@@ -53,37 +54,34 @@ def google(user_id, text):
         model = gem.GenerativeModel(model_name="gemini-pro",
                               generation_config=generation_config,
                               safety_settings=safety_settings)
-        
+
         if user_id not in histories:
             histories[user_id] = []
 
-        # If the user's history has 10 or more messages, remove the oldest one
-        if len(histories[user_id]) >= 10:
-            histories[user_id].pop(0)
-
-        # Add the user's message to their history
-        histories[user_id].append({
-            "role": "user",
-            "parts": f"{text}"
-        })
+        # Initialize the history for a user
+        if user_id not in histories:
+            histories[user_id] = deque(maxlen=10)
 
         # Start the chat with the user's history
-        convo = model.start_chat(history=histories[user_id][:-1])  # Exclude the last user message
+        convo = model.start_chat(history=histories[user_id])  # Include the last user message
         convo.send_message(text)
 
-        # If the user's history has 10 or more messages, remove the oldest one
-        if len(histories[user_id]) >= 10:
-            histories[user_id].pop(0)
-
-        # Add the model's response to the user's history
+        # Add the user's message and the model's response to the history together
         histories[user_id].append({
-            "role": "model",
-            "parts": f"{convo.last.text}"
+            {
+                "role": "user",
+                "parts": f"{text}"
+            },
+            {
+                "role": "model",
+                "parts": f"{convo.last.text}"
+            }
         })
+
         return f"{convo.last.text}"
     except Exception as e:
         return f"Error generating text: {str(e)}"
-            
+    
 
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
