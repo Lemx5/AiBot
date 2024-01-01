@@ -1,6 +1,6 @@
 import os
 import re
-import google.generativeai as gem
+import google.generativeai as genai
 from pyrogram import Client, filters
 from flask import Flask
 from threading import Thread
@@ -13,7 +13,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 
-gem.configure(api_key=GENAI_API_KEY)
+genai.configure(api_key=GENAI_API_KEY)
 
 bot = Client(
     name="geminibot",
@@ -23,7 +23,7 @@ bot = Client(
 )
 
 histories = {}
-def google(user_id, text):
+def gemini(user_id, text):
     try:
         generation_config = {
             "temperature": 0.9,
@@ -51,7 +51,7 @@ def google(user_id, text):
         },
         ]
 
-        model = gem.GenerativeModel(model_name="gemini-pro",
+        model = genai.GenerativeModel(model_name="gemini-pro",
                               generation_config=generation_config,
                               safety_settings=safety_settings)
 
@@ -138,7 +138,7 @@ async def generate(_, message):
         return         
     try:
         m = await message.reply_text("Processing...")
-        response = google(message.from_user.id, message.text)
+        response = gemini(message.from_user.id, message.text)
         await m.edit(response)        
     except Exception as e:
         print(f"Error in 'generate' message handler: {e}")
