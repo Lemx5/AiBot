@@ -67,7 +67,7 @@ def google(user_id, text):
         convo.send_message(text)
 
         # Add the user's message and the model's response to the history together
-        histories[user_id].append({
+        histories[user_id].append([
             {
                 "role": "user",
                 "parts": f"{text}"
@@ -76,8 +76,7 @@ def google(user_id, text):
                 "role": "model",
                 "parts": f"{convo.last.text}"
             }
-        })
-
+        ])
         return f"{convo.last.text}"
     except Exception as e:
         return f"Error generating text: {str(e)}"
