@@ -7,8 +7,6 @@ from threading import Thread
 from profanity import profanity
 import json
 from collections import deque
-import pytz
-from datetime import datetime
 
 API_ID = os.getenv("API_ID")
 API_HASH = os.getenv("API_HASH")
@@ -23,18 +21,6 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH
 )
-
-kol = pytz.timezone('Asia/Kolkata')
-current_hour = kol.localize(datetime.now()).hour
-
-if current_hour < 12:
-    wish = "Good Morning"
-elif current_hour < 16:
-    wish = "Good Afternoon"
-elif current_hour < 20:
-    wish = "Good Evening"
-else:
-    wish = "Good Night"
 
 histories = {}
 def gemini(user_id, text):
@@ -99,7 +85,7 @@ def gemini(user_id, text):
 @bot.on_message(filters.command('start', prefixes='/'))
 async def start(_, message):
     await message.reply_text(
-        f"<b>{wish}!</b> {message.from_user.mention},\nI'm Gemini & I can chat with you or answer your questions. Just ask!",
+        f"Hi! <b>{message.from_user.mention}</b>,\nI'm Gemini & I can chat with you or answer your questions. Just ask!",
         )
     
 @bot.on_message(filters.command('clear', prefixes='/'))
